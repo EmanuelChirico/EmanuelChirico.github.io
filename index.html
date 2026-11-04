@@ -365,7 +365,7 @@
 }
   /* glifi non ancora "decodificati" del nome (effetto da idea1) */
   .hero h1 .gl { color:var(--red); }
-  .hero .role, .hero .scrollcue { opacity:0; transition:opacity 0.6s; }
+  .hero .role, .hero .scrollcue { opacity:1; transition:opacity 0.6s; }
   .hero.typed .role, .hero.typed .scrollcue { opacity:1; }
   .hero .role {
     margin-top:22px; font-weight:500;
@@ -828,7 +828,7 @@
 <!-- HERO -->
 <header class="hero" id="hero">
   <p class="prompt" aria-hidden="true">emanuel@portfolio:~$&nbsp;<span class="cmd">whoami</span></p>
-  <h1 aria-label="Emanuel"><span id="scrambleName" aria-hidden="true"></span><span class="tcaret" id="tcaret">█</span></h1>
+  <h1 aria-label="Emanuel"><span id="scrambleName" aria-hidden="true">EMANUEL</span><span class="tcaret" id="tcaret">█</span></h1>
   <p class="role">Software Developer <span class="sep">/</span> Security <span class="sep">/</span> Systems</p>
   <div class="scrollcue" aria-hidden="true">
     <span>Scroll to reveal</span>
@@ -863,7 +863,7 @@
       </div>
     </div>
     <div class="about-right">
-      <img src="DSC_0536.JPG" alt="Emanuel Chirico">
+      <img src="DSC_0536.JPG" alt="Emanuel Chirico" onerror="this.hidden=true">
       <div class="about-data">
         <div><span>LOCATION</span> Italy</div>
         <div><span>UNIVERSITY</span> University of Salerno</div>
@@ -898,7 +898,7 @@
     <h2>Let's talk about!</h2>
     <p>Tirocini, collaborazioni o due chiacchiere tecniche: scrivimi.</p>
     <div class="links">
-      <a href="emanuelchirico03@gmail.com">Email</a>
+      <a href="mailto:emanuelchirico03@gmail.com">Email</a>
       <a href="https://github.com/EmanuelChirico/EmanuelChirico" target="_blank" rel="noopener">GitHub</a>
       <a href="https://www.linkedin.com/in/emanuel-chirico-11946a395/" target="_blank" rel="noopener">LinkedIn</a>
     </div>
@@ -955,7 +955,7 @@
   <section class="closing wrap">
     <span class="cat">get in touch</span>
     <h2>Costruiamo qualcosa</h2>
-    <a class="bigmail" href="mailto:tua.email@example.com">emanuelchirico03@gmail.com</a>
+    <a class="bigmail" href="mailto:emanuelchirico03@gmail.com">emanuelchirico03@gmail.com</a>
     <div class="outro-socials">
       <a href="https://github.com/EmanuelChirico/EmanuelChirico" target="_blank" rel="noopener">GitHub</a>
       <a href="https://www.linkedin.com/in/emanuel-chirico-11946a395/" target="_blank" rel="noopener">LinkedIn</a>
@@ -970,6 +970,7 @@
   </div>
 </footer>
 
+<script id="projectsFallback" type="application/json">{"projects": [{"title": "Passman", "sub": "Security · Rust", "badge": "Flagship", "year": "2026", "desc": "Vault local-first in Rust. Derivazione di chiave con Argon2id, cifratura autenticata e un threat model scritto che copre attacchi offline e memory disclosure.", "tags": ["Rust", "Crittografia", "Sistemi"], "art": "a1", "img": "", "url": "#", "featured": true}, {"title": "Aequitas", "sub": "Crittografia", "badge": "Formal", "year": "2025", "desc": "Protocollo di voto elettronico con analisi di sicurezza formale: segretezza del voto, verificabilità e resistenza alla coercizione, specificate su quattro work package.", "tags": ["Crittografia", "Modellazione formale"], "art": "a2", "img": "", "url": "#", "featured": true}, {"title": "Waste AI", "sub": "Machine Learning", "badge": "PyTorch", "year": "2025", "desc": "Transfer learning con ResNet18/50 su oltre 10 esperimenti controllati, per isolare l'effetto reale di oversampling, augmentation e profondità di fine-tuning.", "tags": ["Python", "Machine Learning"], "art": "a3", "img": "", "url": "#", "featured": true}, {"title": "Minervas", "sub": "Backend · AI", "badge": "vLLM", "year": "2025", "desc": "Chatbot WhatsApp Business portato da prototipo a server GPU in produzione: FastAPI, Redis, MongoDB e inferenza vLLM dietro le webhook API di Meta.", "tags": ["Python", "Backend", "Machine Learning"], "art": "a4", "img": "", "url": "#", "featured": true}, {"title": "VibeFlow", "sub": "Software Design", "badge": "JavaFX", "year": "2024", "desc": "Music manager in JavaFX costruito su Observer, State, Command e Strategy, con documentazione UML completa e sviluppo di squadra a sprint.", "tags": ["Java", "Design pattern"], "art": "a5", "img": "", "url": "#", "featured": true}, {"title": "π Frame", "sub": "Raspberry Pi", "badge": "DIY", "year": "2024", "desc": "Cornice digitale su Raspberry Pi: sincronizzazione delle foto, dimming automatico e avvio a prova di stacco della corrente.", "tags": ["Linux", "Hardware"], "art": "a6", "img": "", "url": "#", "featured": true}, {"title": "Progetto minore", "sub": "Esempio d'archivio", "badge": "Archivio", "year": "2024", "desc": "Questo progetto ha featured: false, quindi compare solo nell'archivio e non nel rolodex in home. Duplica questo blocco per aggiungerne altri.", "tags": ["Python"], "art": "a3", "img": "", "url": "#", "featured": false}]}</script>
 <script>
 (() => {
 // ========== FAVICON ANIMATA — terminale che digita ==========
@@ -1264,7 +1265,7 @@
 
     // agganciata all'altezza reale della card: i bordi delle card adiacenti
     // sfiorano quello attivo, come un nastro continuo
-    const cardH = cards[0].el.offsetHeight || vh() * 0.55;
+    const cardH = cards[0]?.el.offsetHeight || vh() * 0.55;
     const spacing = cardH * 0.82;
 
     cards.forEach(c => {
@@ -1370,7 +1371,8 @@
 
   // ---------- AVVIO ----------
   function init(data) {
-    projects = data.projects || [];
+    projects = Array.isArray(data.projects) ? data.projects : [];
+    if (!projects.length) throw new Error("Nessun progetto disponibile");
     featured = projects.filter(pr => pr.featured);
     if (!featured.length) featured = projects.slice(0, 6); // rete di sicurezza
 
@@ -1406,19 +1408,25 @@
       `<div style="position:absolute;inset:0;display:flex;align-items:center;
         justify-content:center;text-align:center;padding:40px">
         <p style="max-width:46ch;line-height:1.7;color:var(--muted);font-size:15px">
-          Non riesco a leggere <strong style="color:var(--cream)">projects.json</strong>.
+          Non riesco a inizializzare i progetti.
           Se hai aperto il file con un doppio clic, il browser blocca la lettura dei file locali:
           avvia un server con <strong style="color:var(--cream)">python3 -m http.server</strong>
           nella cartella del sito e apri <strong style="color:var(--cream)">localhost:8000</strong>.
-          Online (GitHub Pages, Netlify) funziona senza fare nulla.
+          Su GitHub Pages verifica che index.html e projects.json siano pubblicati nella stessa cartella.
         </p>
       </div>`;
   }
 
-  fetch('projects.json')
-    .then(r => { if (!r.ok) throw new Error(r.status); return r.json(); })
+  // Caricamento progressivo: funziona anche quando il JSON esterno non viene pubblicato.
+  // Prima prova il file accanto a index.html; se non è raggiungibile usa la copia incorporata.
+  const fallbackData = JSON.parse(document.getElementById('projectsFallback').textContent);
+  fetch(new URL('./projects.json', document.baseURI), { cache: 'no-cache' })
+    .then(r => { if (!r.ok) throw new Error(`projects.json: HTTP ${r.status}`); return r.json(); })
     .then(init)
-    .catch(loadFailed);
+    .catch(err => {
+      console.warn('Caricamento projects.json fallito; uso i progetti incorporati.', err);
+      try { init(fallbackData); } catch (fallbackErr) { loadFailed(fallbackErr); }
+    });
 
   // ---------- NAV ----------
   const panelAbout = document.getElementById('panelAbout');
@@ -1519,6 +1527,7 @@
 
   // ---------- FRECCE ----------
   window.addEventListener('keydown', e => {
+    if (document.querySelector('.panel.on') || e.target.closest('input, textarea, select')) return;
     if (e.key === 'ArrowDown' || e.key === 'ArrowRight') {
       window.scrollBy({ top: vh(), behavior: 'smooth' });
     } else if (e.key === 'ArrowUp' || e.key === 'ArrowLeft') {
