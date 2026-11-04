@@ -1,0 +1,103 @@
+{
+  "_schema": {
+    "_nota": "Questo blocco è solo documentazione: il sito lo ignora. Aggiungi progetti nell'array qui sotto.",
+    "title": "Titolo grande sulla card e nell'archivio.",
+    "sub": "Categoria breve. Appare sotto il titolo e come filtro implicito.",
+    "badge": "Etichetta rossa in alto a destra sulla card (es. Flagship, PyTorch).",
+    "year": "Anno. Ordina l'archivio dal più recente.",
+    "desc": "Una o due frasi. Visibile solo nell'archivio.",
+    "tags": "Lista di parole chiave. Generano automaticamente i filtri dell'archivio.",
+    "art": "Palette di sfondo quando NON c'è immagine: a1 ruggine, a2 ambra, a3 sabbia, a4 borgogna, a5 crema, a6 caffè.",
+    "img": "Copertina 16:9, min 1200px. Percorso relativo (es. 'img/passman.jpg') o URL. Lascia '' per usare lo sfondo grafico.",
+    "url": "Link al progetto. Usa '#' per nasconderlo.",
+    "featured": "true = compare nel rolodex 3D in home. false = solo nell'archivio."
+  },
+
+  "projects": [
+    {
+      "title": "Passman",
+      "sub": "Security · Rust",
+      "badge": "Flagship",
+      "year": "2026",
+      "desc": "Vault local-first in Rust. Derivazione di chiave con Argon2id, cifratura autenticata e un threat model scritto che copre attacchi offline e memory disclosure.",
+      "tags": ["Rust", "Crittografia", "Sistemi"],
+      "art": "a1",
+      "img": "",
+      "url": "#",
+      "featured": true
+    },
+    {
+      "title": "Aequitas",
+      "sub": "Crittografia",
+      "badge": "Formal",
+      "year": "2025",
+      "desc": "Protocollo di voto elettronico con analisi di sicurezza formale: segretezza del voto, verificabilità e resistenza alla coercizione, specificate su quattro work package.",
+      "tags": ["Crittografia", "Modellazione formale"],
+      "art": "a2",
+      "img": "",
+      "url": "#",
+      "featured": true
+    },
+    {
+      "title": "Waste AI",
+      "sub": "Machine Learning",
+      "badge": "PyTorch",
+      "year": "2025",
+      "desc": "Transfer learning con ResNet18/50 su oltre 10 esperimenti controllati, per isolare l'effetto reale di oversampling, augmentation e profondità di fine-tuning.",
+      "tags": ["Python", "Machine Learning"],
+      "art": "a3",
+      "img": "",
+      "url": "#",
+      "featured": true
+    },
+    {
+      "title": "Minervas",
+      "sub": "Backend · AI",
+      "badge": "vLLM",
+      "year": "2025",
+      "desc": "Chatbot WhatsApp Business portato da prototipo a server GPU in produzione: FastAPI, Redis, MongoDB e inferenza vLLM dietro le webhook API di Meta.",
+      "tags": ["Python", "Backend", "Machine Learning"],
+      "art": "a4",
+      "img": "",
+      "url": "#",
+      "featured": true
+    },
+    {
+      "title": "VibeFlow",
+      "sub": "Software Design",
+      "badge": "JavaFX",
+      "year": "2024",
+      "desc": "Music manager in JavaFX costruito su Observer, State, Command e Strategy, con documentazione UML completa e sviluppo di squadra a sprint.",
+      "tags": ["Java", "Design pattern"],
+      "art": "a5",
+      "img": "",
+      "url": "#",
+      "featured": true
+    },
+    {
+      "title": "π Frame",
+      "sub": "Raspberry Pi",
+      "badge": "DIY",
+      "year": "2024",
+      "desc": "Cornice digitale su Raspberry Pi: sincronizzazione delle foto, dimming automatico e avvio a prova di stacco della corrente.",
+      "tags": ["Linux", "Hardware"],
+      "art": "a6",
+      "img": "",
+      "url": "#",
+      "featured": true
+    },
+
+    {
+      "title": "Progetto minore",
+      "sub": "Esempio d'archivio",
+      "badge": "Archivio",
+      "year": "2024",
+      "desc": "Questo progetto ha featured: false, quindi compare solo nell'archivio e non nel rolodex in home. Duplica questo blocco per aggiungerne altri.",
+      "tags": ["Python"],
+      "art": "a3",
+      "img": "",
+      "url": "#",
+      "featured": false
+    }
+  ]
+}
