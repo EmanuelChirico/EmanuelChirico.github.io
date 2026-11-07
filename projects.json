@@ -68,6 +68,11 @@
             "caption": "03 / Sensors used to connect the model to its environment."
           }
         ]
+      },
+      "logo": {
+        "src": "assets/projects/luma/logo.webp",
+        "width": 360,
+        "height": 360
       }
     },
     {
@@ -104,6 +109,11 @@
         ],
         "outcome": "The prototype combines a Flask application with an inspectable cryptographic workflow. Google OpenID Connect acts as a stand-in for SPID during authentication. This is an academic proof of concept, rather than a deployed election system.",
         "credits": "Team: Luigi Autorino and Emanuel Chirico. Summary based on the project README."
+      },
+      "logo": {
+        "src": "assets/projects/aequitas/logo.webp",
+        "width": 640,
+        "height": 213
       }
     },
     {
@@ -140,6 +150,11 @@
         ],
         "outcome": "The application brings library management, manual and automatic playlists, playback modes and undo into one desktop interface. The repository also includes project documentation and team development artefacts.",
         "credits": "Team: Luigi Autorino, Emanuel Chirico, Chiara Crisci and Emanuela Graziuso. Summary based on the project README."
+      },
+      "logo": {
+        "src": "assets/projects/vibeflow/logo.webp",
+        "width": 174,
+        "height": 174
       }
     },
     {
@@ -176,6 +191,11 @@
         ],
         "outcome": "The hackathon prototype demonstrates procedural training in a simulated environment. Repeated-session reset and return navigation are among the improvements identified by the team.",
         "credits": "Team project developed during the Youbiquo hackathon. Contribution summary based on the repository team table."
+      },
+      "logo": {
+        "src": "assets/projects/safestep-xr/logo.webp",
+        "width": 465,
+        "height": 360
       }
     },
     {

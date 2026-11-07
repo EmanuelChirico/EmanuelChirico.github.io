@@ -1029,7 +1029,7 @@
             <span class="year">${p.year || ''} / ${p.sub}</span>
             <span class="badge">${p.badge || ''}</span>
           </div>
-          <span class="title">${p.title}</span>
+          <div class="project-identity">${projectLogo(p)}<span class="title">${p.title}</span></div>
           <p class="summary">${p.desc || ''}</p>
           <div class="bottom">
             <span class="name">Explore project ↗</span>
@@ -1155,7 +1155,7 @@
       const attrs = ` href="${projectHref(pr)}"`;
       return `<${tag} class="arch-row" data-tags="${(pr.tags || []).join('|')}"${attrs}>
         <div>
-          <h3>${pr.title}${flag}</h3>
+          <div class="arch-heading">${projectLogo(pr)}<h3>${pr.title}${flag}</h3></div>
           <p>${pr.desc || ''}</p>
         </div>
         <div class="arch-right">

@@ -9,6 +9,14 @@
     } catch { return ''; }
   };
   window.projectHref = project => `#project/${encodeURIComponent(project.id)}`;
+  window.projectLogo = (project, className = '') => {
+    const logo = project.logo;
+    if (!logo || !safeURL(logo.src)) return '';
+    return `<img class="project-logo ${escape(className)}" data-project="${escape(project.id)}" src="${safeURL(logo.src)}" alt="" width="${Number(logo.width) || 160}" height="${Number(logo.height) || 160}" decoding="async">`;
+  };
+  document.addEventListener('error', event => {
+    if (event.target.matches?.('.project-logo')) event.target.hidden = true;
+  }, true);
   window.initProjectDetails = projects => {
     const dialog = document.createElement('dialog');
     dialog.className = 'project-detail';
@@ -49,10 +57,10 @@
         <article class="story-wrap">
           <header class="story-header">
             <div class="story-eyebrow"><p>${escape(project.sub)}</p><p class="story-index">Project ${String(index + 1).padStart(2, '0')} / ${String(projects.length).padStart(2, '0')}</p></div>
-            <div class="story-heading"><h2 class="story-title" id="storyTitle">${escape(project.title)}</h2><p class="story-deck">${escape(detail.intro || project.desc)}</p></div>
+            <div class="story-heading"><div class="story-identity">${projectLogo(project, 'story-logo')}<h2 class="story-title" id="storyTitle">${escape(project.title)}</h2></div><p class="story-deck">${escape(detail.intro || project.desc)}</p></div>
             <dl class="story-facts"><div><dt>Year</dt><dd>${escape(project.year)}</dd></div><div><dt>Context</dt><dd>${escape(detail.context || 'Academic project')}</dd></div><div><dt>Built with</dt><dd>${(project.tags || []).map(escape).join(' / ')}</dd></div></dl>
           </header>
-          ${primary ? `<figure class="story-cover"><img src="${safeURL(primary.src)}" alt="${escape(primary.alt)}" width="1200" height="700" fetchpriority="high"><figcaption><span>${escape(primary.caption)}</span><span>Project documentation / ${escape(project.year)}</span></figcaption></figure>` : `<div class="story-monogram" aria-hidden="true"><span>${escape(project.title)}</span><p>${escape(project.badge)}</p></div>`}
+          ${primary ? `<figure class="story-cover"><img src="${safeURL(primary.src)}" alt="${escape(primary.alt)}" width="1200" height="700" fetchpriority="high"><figcaption><span>${escape(primary.caption)}</span><span>Project documentation / ${escape(project.year)}</span></figcaption></figure>` : project.logo ? '' : `<div class="story-monogram" aria-hidden="true"><span>${escape(project.title)}</span><p>${escape(project.badge)}</p></div>`}
           <div class="story-body"><nav class="story-toc" aria-label="On this project"><p>inside the project</p>${sections.map(item => `<a href="#${item.id}" data-story-section="${item.id}">${item.label}</a>`).join('')}</nav><div>${sections.map(item => item.html).join('')}<p class="story-source">${escape(detail.credits || 'Project summary based on the linked repository.')} ${safeURL(project.url) ? `<a href="${safeURL(project.url)}" target="_blank" rel="noopener noreferrer">Explore the repository ↗</a>` : ''}</p></div></div>
           <footer class="story-footer">${codeLink(project)}<a class="story-next" href="${window.projectHref(next)}"><span>Next project ↗</span><strong>${escape(next.title)}</strong></a></footer>
         </article>`;
@@ -66,7 +74,7 @@
         dialog.querySelector(`#${link.dataset.storySection}`).scrollIntoView({behavior: matchMedia('(prefers-reduced-motion: reduce)').matches ? 'instant' : 'smooth'});
       }));
       // Failed images never leave a broken image icon in the story.
-      dialog.querySelectorAll('img').forEach(img => img.addEventListener('error', () => { img.closest('figure').hidden = true; }));
+      dialog.querySelectorAll('figure img').forEach(img => img.addEventListener('error', () => { img.closest('figure').hidden = true; }));
       dialog.scrollTop = 0;
       document.title = `${project.title} | Emanuel Chirico`;
     }
