@@ -1,0 +1,116 @@
+/* Reserve the header's actual height; scrolling content never sits underneath it. */
+:root { --header-height: 112px; }
+.site-header {
+  position: fixed; inset: 0 0 auto; height: 112px; z-index: 200;
+  background: var(--bg); transition: background .5s;
+}
+.panel, .about-panel, .archive-panel {
+  top: var(--header-height); padding-top: 32px;
+  padding-bottom: max(40px, env(safe-area-inset-bottom));
+  overflow-y: auto; overscroll-behavior: contain;
+  scroll-padding-top: 24px;
+}
+.panel .inner { min-width: 0; margin-block: auto; }
+.panel { align-items: flex-start; }
+.about-script { margin-top: 0; }
+.about-wrapper > *, .about-data > *, .arch-row > *, .craft-grid > * { min-width: 0; }
+.about-data, .arch-row, .panel .inner { overflow-wrap: anywhere; }
+.panel .links { flex-wrap: wrap; }
+.hero { height: 100svh; min-height: 640px; padding-top: var(--header-height); }
+.hero .scrollcue { bottom: 80px; }
+.outro { scroll-margin-top: var(--header-height); }
+.story-heading > *, .story-body > *, .story-facts > *, .story-footer > * { min-width: 0; }
+.story-monogram, .story-footer { overflow-wrap: anywhere; }
+.story-back, .story-theme, .story-code { min-height: 44px; display: inline-flex; align-items: center; }
+
+/* Tablet, phone and short landscape windows use a compact two-row header. */
+@media (max-width: 900px), (max-height: 600px) and (orientation: landscape) {
+  :root { --header-height: calc(108px + env(safe-area-inset-top)); }
+  .site-header {
+    height: auto; display: grid; gap: 6px;
+    padding: calc(10px + env(safe-area-inset-top)) max(20px, env(safe-area-inset-right)) 6px max(20px, env(safe-area-inset-left));
+    border-bottom: 1px solid var(--box);
+  }
+  .site-header .lockup {
+    position: static; display: flex; align-items: baseline; gap: 7px;
+    line-height: 1; opacity: 1 !important;
+  }
+  .lockup .by { display: inline; font-size: 26px; margin: 0; }
+  .lockup .name { font-size: 23px; }
+  .mainnav { position: static; min-width: 0; }
+  .mainnav .rule { height: 1px; margin-bottom: 0; }
+  .mainnav ul { display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 4px; }
+  .mainnav button { width: 100%; min-height: 44px; padding: 8px 0; font-size: 14px; letter-spacing: .08em; }
+  .mainnav li:first-child button { text-align: left; }
+  .mainnav li:last-child button { text-align: right; }
+  .panel, .about-panel, .archive-panel {
+    padding-inline: max(20px, env(safe-area-inset-left)) max(20px, env(safe-area-inset-right));
+    padding-top: 28px;
+  }
+  .about-wrapper { grid-template-columns: minmax(0, 1fr); gap: 32px; text-align: center; }
+  .about-left .about-name { font-size: clamp(52px, 11vw, 88px); }
+  .about-focus, .about-data { gap: 0 16px; }
+  .about-focus li { font-size: 13px; }
+  .about-data { row-gap: 16px; }
+  .about-right { margin-top: 0; }
+  .about-right .back { margin-top: 32px; }
+  .hero { min-height: 600px; padding: calc(var(--header-height) + 24px) 20px 150px; }
+  .hero h1 { font-size: clamp(48px, 18vw, 130px); }
+  .hero .prompt, .hero .role { padding-inline: 0; }
+  .hero .role { letter-spacing: .08em; font-size: 11px; }
+  .hero-actions { gap: 10px; margin-top: 18px; }
+  .hero-actions button { min-height: 44px; }
+  .hero .scrollcue { bottom: 78px; gap: 8px; }
+  .hero .scrollcue .line { height: 24px; }
+  .stage {
+    inset: calc(var(--header-height) + 20px) max(20px, env(safe-area-inset-right)) calc(var(--meta-height, 44px) + 88px + env(safe-area-inset-bottom)) max(20px, env(safe-area-inset-left));
+  }
+  .card {
+    left: 50%; top: 50%; width: 100%; height: 100%; max-height: 420px;
+    min-height: 0; aspect-ratio: auto;
+    transform: translate(-50%, -50%) !important;
+  }
+  .card .art { padding: 16px 0; gap: 14px; overflow-y: auto; overscroll-behavior: contain; }
+  .card .top { align-items: flex-start; flex-wrap: wrap; gap: 6px 14px; }
+  .card .title { flex-shrink: 0; margin-top: clamp(0px, 3vh, 28px); font-size: clamp(30px, 7vw, 60px); overflow-wrap: anywhere; }
+  .card .summary { font-size: 13px; flex-shrink: 0; }
+  .card .bottom { margin-top: auto; padding-top: 6px; flex-shrink: 0; }
+  .card .year, .card .badge { font-size: 10px; letter-spacing: .05em; }
+  .card .ghost { display: none; }
+  .meta {
+    top: auto; bottom: calc(68px + env(safe-area-inset-bottom)); left: 20px; right: 20px;
+    max-width: none; transform: none; display: flex; flex-wrap: wrap;
+    align-items: center; justify-content: space-between; gap: 8px 12px;
+  }
+  .meta h2, .meta .cat, .meta .who { display: none; }
+  .meta .count { float: none; margin: 0; font-size: 13px; }
+  .meta .open { margin: 0; min-height: 44px; display: inline-flex; align-items: center; font-size: 11px; letter-spacing: .1em; }
+  .carousel-nav { display: flex; gap: 8px; margin: 0; }
+  .carousel-nav button { width: 44px; height: 44px; }
+  .tools { left: max(20px, env(safe-area-inset-left)); bottom: calc(12px + env(safe-area-inset-bottom)); gap: 10px; }
+  .tools button { min-height: 44px; padding: 10px 16px; background: var(--bg); }
+  .archive-head { gap: 16px; }
+  .arch-row h3 { overflow-wrap: anywhere; }
+  .arch-right { flex-wrap: wrap; }
+  .story-bar { position: static; flex-wrap: wrap; gap: 4px 16px; padding-top: max(10px, env(safe-area-inset-top)); }
+  .story-bar-actions { flex-wrap: wrap; gap: 16px; }
+  .story-brand { display: none; }
+  .story-toc { position: static; }
+  .story-section { scroll-margin-top: 20px; }
+  .story-eyebrow { flex-wrap: wrap; }
+  .story-monogram { min-height: 180px; padding: 24px; }
+  .story-monogram span { font-size: clamp(40px, 12vw, 100px); }
+  .story-footer { flex-wrap: wrap; align-items: flex-start; }
+  .story-next { max-width: 100%; margin-left: auto; }
+}
+
+@media (max-height: 600px) and (orientation: landscape) {
+  .site-header { grid-template-columns: auto 1fr; align-items: center; gap: 24px; padding-block: max(6px, env(safe-area-inset-top)) 6px; }
+  .mainnav .rule { display: none; }
+  .stage { top: calc(var(--header-height) + 12px); bottom: calc(112px + env(safe-area-inset-bottom)); }
+  .meta { bottom: calc(60px + env(safe-area-inset-bottom)); }
+  .card .art { gap: 10px; padding-block: 12px; }
+  .card .title { font-size: 32px; }
+  .card .summary { font-size: 12px; line-height: 1.5; }
+  .hero { min-height: 520px; }
+}

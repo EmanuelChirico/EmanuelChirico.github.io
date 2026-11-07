@@ -2,13 +2,14 @@
 <html lang="en">
 <head>
 <meta charset="UTF-8" />
-<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
 <title>Emanuel Chirico | Embedded Systems &amp; Computer Engineering</title>
 <meta name="description" content="Emanuel Chirico, MSc Computer Engineering student at the University of Salerno. Embedded systems, real-time systems, critical systems and AI. Explore public academic and team projects." />
 <link rel="preconnect" href="https://fonts.googleapis.com" />
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
 <link href="https://fonts.googleapis.com/css2?family=Anton&family=Italianno&family=Inter:wght@400;500;600&family=JetBrains+Mono:wght@700&display=swap" rel="stylesheet" />
 <link rel="icon" type="image/svg+xml" href="data:image/svg+xml,%3Csvg%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%20viewBox%3D%220%200%2064%2064%22%3E%3Crect%20width%3D%2264%22%20height%3D%2264%22%20fill%3D%22%230c0906%22%2F%3E%3Ctext%20x%3D%2232%22%20y%3D%2243%22%20text-anchor%3D%22middle%22%20font-family%3D%22Arial%2Csans-serif%22%20font-weight%3D%22700%22%20font-size%3D%2232%22%20fill%3D%22%23f2ead8%22%3EEC%3C%2Ftext%3E%3C%2Fsvg%3E" />
+<link rel="stylesheet" href="project-detail.css" />
 <style>
   /* ========== VARIABILI ========== */
   :root {
@@ -658,6 +659,7 @@
     .arch-row, .arch-row::before, .bigmail, .bigmail::after, .craft-cell { transition:none; }
   }
 </style>
+<link rel="stylesheet" href="responsive.css" />
 </head>
 <body>
 
@@ -665,6 +667,7 @@
 <canvas id="field" aria-hidden="true"></canvas>
 
 <!-- HEADER -->
+<div class="site-header" id="siteHeader">
 <div class="lockup" id="mainLockup">
   <span class="by">Emanuel</span>
   <span class="name">Chirico</span>
@@ -679,6 +682,7 @@
     <li><button id="navContact">Contact</button></li>
   </ul>
 </nav>
+</div>
 
 <!-- TOOLS -->
 <div class="tools">
@@ -708,9 +712,9 @@
 <aside class="meta offstage" id="meta" inert>
   <span class="cat" id="mCat"></span>
   <h2 id="mTitle"></h2>
-  <p class="who">Public repository</p>
+  <p class="who">The story behind the build</p>
   <p class="count" id="mCount"></p>
-  <a class="open" id="mLink" style="display:none" target="_blank" rel="noopener">View repository ↗</a>
+  <a class="open" id="mLink" style="display:none">Explore project ↗</a>
   <div class="carousel-nav" aria-label="Project navigation">
     <button id="prevProject" aria-label="Previous project">←</button>
     <button id="nextProject" aria-label="Next project">→</button>
@@ -843,6 +847,7 @@
   </div>
 </footer>
 
+<script src="project-detail.js"></script>
 <script>
 (() => {
   // Canvas effects are optional: privacy settings must not stop navigation or data loading.
@@ -852,6 +857,16 @@
   'use strict';
   const reduceMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
   const body = document.body;
+  // Reflow after rotation, font loading and browser text-size changes.
+  const siteHeader = document.getElementById('siteHeader');
+  const measureHeader = () => document.documentElement.style.setProperty(
+    '--header-height', `${Math.ceil(siteHeader.getBoundingClientRect().height)}px`
+  );
+  new ResizeObserver(measureHeader).observe(siteHeader);
+  measureHeader();
+  new ResizeObserver(entries => {
+    document.documentElement.style.setProperty('--meta-height', `${Math.ceil(entries[0].target.getBoundingClientRect().height)}px`);
+  }).observe(document.getElementById('meta'));
 
   // ---------- SFONDO: particelle fluttuanti (flow field) ----------
   const fieldCanvas = document.getElementById('field');
@@ -1002,10 +1017,10 @@
   // ---------- CARD ----------
   function buildCards() {
     cards = featured.map((p, i) => {
-      const hasLink = p.url && p.url !== '#';
-      const el = document.createElement(hasLink ? 'a' : 'div');
+      const el = document.createElement('a');
       el.className = 'card';
-      if (hasLink) { el.href = p.url; el.target = '_blank'; el.rel = 'noopener'; }
+      el.href = projectHref(p);
+      el.setAttribute('aria-label', `Explore ${p.title}`);
 
       el.innerHTML = `
         <div class="art">
@@ -1017,7 +1032,7 @@
           <span class="title">${p.title}</span>
           <p class="summary">${p.desc || ''}</p>
           <div class="bottom">
-            <span class="name">GitHub repository ↗</span>
+            <span class="name">Explore project ↗</span>
             <span class="number js-num"></span>
           </div>
         </div>`;
@@ -1046,7 +1061,7 @@
   // 1.2vh extra: l'ultima card resta centrata, poi l'outro sale con calma
   function setSpace() { space.style.height = `${(N + 1.2) * 100}vh`; }
 
-  const HERO_H = () => vh();
+  const HERO_H = () => document.getElementById('hero').offsetHeight;
 
   let p = 0;
   let targetP = 0;
@@ -1075,8 +1090,8 @@
       mCount.textContent = `${pad(slot + 1)} / ${pad(N)}`;
       document.getElementById('prevProject').disabled = slot === 0;
       document.getElementById('nextProject').disabled = slot === N - 1;
-      if (!c.proj.url || c.proj.url === '#') mLink.style.display = 'none';
-      else { mLink.style.display = ''; mLink.href = c.proj.url; }
+      mLink.style.display = '';
+      mLink.href = projectHref(c.proj);
       meta.classList.remove('swap');
     };
     if (instant) { apply(); return; }
@@ -1136,9 +1151,8 @@
     archList.innerHTML = sorted.map(pr => {
       const tags = (pr.tags || []).join(' · ');
       const flag = pr.featured ? '<span class="flag">Featured</span>' : '';
-      const href = pr.url && pr.url !== '#' ? pr.url : null;
-      const tag = href ? 'a' : 'div';
-      const attrs = href ? ` href="${href}" target="_blank" rel="noopener"` : '';
+      const tag = 'a';
+      const attrs = ` href="${projectHref(pr)}"`;
       return `<${tag} class="arch-row" data-tags="${(pr.tags || []).join('|')}"${attrs}>
         <div>
           <h3>${pr.title}${flag}</h3>
@@ -1147,6 +1161,7 @@
         <div class="arch-right">
           <span class="yr">${pr.year || ''}</span>
           <span class="tg">${tags}</span>
+          <span class="tg" style="color:var(--red)">Explore project ↗</span>
         </div>
       </${tag}>`;
     }).join('');
@@ -1200,10 +1215,11 @@
     buildCards();
     syncNumbers();
     setSpace();
-    window.addEventListener('resize', setSpace);
+    window.addEventListener('resize', () => { setSpace(); readScroll(); });
     readScroll();
     setMeta(0, true);
     buildArchive();
+    initProjectDetails(projects);
     render();
 
     for (const [id, direction] of [['prevProject', -1], ['nextProject', 1]]) {
@@ -1301,7 +1317,7 @@
 
   // Esc chiude il pannello aperto
   window.addEventListener('keydown', e => {
-    if (e.key === 'Escape') show(null);
+    if (e.key === 'Escape' && !document.querySelector('.project-detail[open]')) show(null);
   });
 
   // ---------- LIGHT ----------
@@ -1347,7 +1363,7 @@
 
   // ---------- FRECCE ----------
   window.addEventListener('keydown', e => {
-    if (document.querySelector('.panel.on') || e.target.closest?.('input, textarea, select')) return;
+    if (document.querySelector('.panel.on, .project-detail[open]') || e.target.closest?.('input, textarea, select')) return;
     if (e.key === 'ArrowDown' || e.key === 'ArrowRight') {
       window.scrollBy({ top: vh(), behavior: reduceMotion ? 'auto' : 'smooth' });
     } else if (e.key === 'ArrowUp' || e.key === 'ArrowLeft') {

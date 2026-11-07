@@ -25,7 +25,50 @@
         "MQTT"
       ],
       "url": "https://github.com/fra343/Luma-IoT-Project",
-      "featured": true
+      "featured": true,
+      "id": "luma",
+      "detail": {
+        "intro": "A connected home, built at scale. Two ESP32 nodes bring sensing, access control and everyday automation into one physical prototype.",
+        "context": "University · Team project",
+        "overview": "LUMA connects the physical and digital sides of a miniature smart home. One ESP32 manages the entrance, while a second controls the curtain and ventilation. Both run independent MicroPython applications and exchange commands and telemetry through MQTT, with Node-RED providing the dashboard in the original prototype.",
+        "approach": [
+          {
+            "title": "Two independent nodes",
+            "text": "Separate door and curtain applications keep each board focused on its own sensors and actuators. Device wrappers, control logic and communication modules have distinct responsibilities."
+          },
+          {
+            "title": "Control through MQTT",
+            "text": "Commands and telemetry pass through a broker, connecting the physical model to a dashboard without combining both board applications into one firmware."
+          },
+          {
+            "title": "Thresholds with hysteresis",
+            "text": "The curtain uses separate upper and lower thresholds for light and temperature, reducing repeated switching near a single boundary."
+          },
+          {
+            "title": "Feedback at the entrance",
+            "text": "Keypad input, ultrasonic presence sensing, an OLED display and a servo make the access-control sequence visible on the model."
+          }
+        ],
+        "outcome": "The resulting scale model brings together sensor readings, actuator movement and remote commands. It remains an educational prototype: actuator operations are blocking, communication uses plain MQTT and access relies on a demonstration PIN. Non-blocking control and stronger communication security are natural next steps.",
+        "credits": "Team: Francesco Apicella, Luigi Autorino and Emanuel Chirico. Photographs and technical details from the LUMA repository.",
+        "images": [
+          {
+            "src": "assets/projects/luma/prototype.webp",
+            "alt": "Completed LUMA smart home scale model with its entrance and curtain",
+            "caption": "01 / The completed smart home scale model."
+          },
+          {
+            "src": "assets/projects/luma/build.webp",
+            "alt": "LUMA scale model during construction",
+            "caption": "02 / The physical model before the completed assembly."
+          },
+          {
+            "src": "assets/projects/luma/sensors.webp",
+            "alt": "Sensor components documented for the LUMA prototype",
+            "caption": "03 / Sensors used to connect the model to its environment."
+          }
+        ]
+      }
     },
     {
       "title": "Aequitas",
@@ -39,7 +82,29 @@
         "Flask"
       ],
       "url": "https://github.com/EmanuelChirico/Aequitas",
-      "featured": true
+      "featured": true,
+      "id": "aequitas",
+      "detail": {
+        "intro": "An academic exploration of digital voting: encrypted ballots, shared trust and individual proofs of inclusion.",
+        "context": "University · Team project",
+        "overview": "Aequitas is an academic e-voting prototype built around a separation of responsibilities: voter authentication, encrypted ballot submission, ballot registration and tallying. It explores how cryptographic primitives can work together to make a voting process inspectable.",
+        "approach": [
+          {
+            "title": "Encrypted preferences",
+            "text": "RSA-OAEP protects ballot preferences before they are submitted to the ballot register."
+          },
+          {
+            "title": "Distributed trust",
+            "text": "Shamir secret sharing splits the election key across trustees, requiring a threshold of shares for reconstruction."
+          },
+          {
+            "title": "Inclusion receipts",
+            "text": "Merkle-tree proofs allow a voter to check that a ballot is included in the register."
+          }
+        ],
+        "outcome": "The prototype combines a Flask application with an inspectable cryptographic workflow. Google OpenID Connect acts as a stand-in for SPID during authentication. This is an academic proof of concept, rather than a deployed election system.",
+        "credits": "Team: Luigi Autorino and Emanuel Chirico. Summary based on the project README."
+      }
     },
     {
       "title": "VibeFlow",
@@ -53,7 +118,29 @@
         "Design Patterns"
       ],
       "url": "https://github.com/Luigii11/VibeFlow",
-      "featured": true
+      "featured": true,
+      "id": "vibeflow",
+      "detail": {
+        "intro": "A desktop music player used to explore how software architecture supports a changing, interactive application.",
+        "context": "University · Team project",
+        "overview": "VibeFlow is a JavaFX desktop application for managing a music library, building playlists and playing tracks. The project uses familiar music-player interactions to put software design patterns into practice.",
+        "approach": [
+          {
+            "title": "Reversible operations",
+            "text": "The Command pattern records actions on the library and playlists to support undo."
+          },
+          {
+            "title": "Playback behaviour",
+            "text": "State models player states, while Strategy provides interchangeable sequential, shuffle and loop modes."
+          },
+          {
+            "title": "UI coordination",
+            "text": "Observer keeps interface elements updated when application state changes."
+          }
+        ],
+        "outcome": "The application brings library management, manual and automatic playlists, playback modes and undo into one desktop interface. The repository also includes project documentation and team development artefacts.",
+        "credits": "Team: Luigi Autorino, Emanuel Chirico, Chiara Crisci and Emanuela Graziuso. Summary based on the project README."
+      }
     },
     {
       "title": "SafeStep-XR",
@@ -67,7 +154,29 @@
         "XR"
       ],
       "url": "https://github.com/matteodonofrio003/SafeStep-XR",
-      "featured": true
+      "featured": true,
+      "id": "safestep-xr",
+      "detail": {
+        "intro": "An immersive training prototype for industrial emergency procedures, built during the Youbiquo hackathon.",
+        "context": "Hackathon · Team project",
+        "overview": "SafeStep-XR uses Unity and C# to simulate emergency shutdown scenarios in virtual reality. Guided actions, time limits and feedback let the user move through a simulated industrial emergency.",
+        "approach": [
+          {
+            "title": "Guided procedures",
+            "text": "The scenarios combine sequential tasks, timers and visual guidance for activities such as isolation, cooling and evacuation."
+          },
+          {
+            "title": "Immersive interaction",
+            "text": "XR interactions bring scenario selection, equipment manipulation and navigation into the virtual environment."
+          },
+          {
+            "title": "My contribution",
+            "text": "Initial menu logic, supporting scripts, general integration and bug fixing, as documented in the team README."
+          }
+        ],
+        "outcome": "The hackathon prototype demonstrates procedural training in a simulated environment. Repeated-session reset and return navigation are among the improvements identified by the team.",
+        "credits": "Team project developed during the Youbiquo hackathon. Contribution summary based on the repository team table."
+      }
     },
     {
       "title": "Waste Sorting",
@@ -81,7 +190,29 @@
         "Machine Learning"
       ],
       "url": "https://github.com/Luigii11/Waste-Sorting-Neural-Network",
-      "featured": true
+      "featured": true,
+      "id": "waste-sorting",
+      "detail": {
+        "intro": "Teaching a neural network to recognise eight waste categories, and exploring what changes when the training strategy changes.",
+        "context": "University · Team project",
+        "overview": "This machine learning project compares ResNet18 and ResNet50 for waste image classification. The eight categories are battery, clothing, glass, metal, organic, papery, plastic and undifferentiated waste.",
+        "approach": [
+          {
+            "title": "Transfer learning",
+            "text": "Pretrained ResNet models provide the starting point for classification experiments."
+          },
+          {
+            "title": "Training experiments",
+            "text": "Oversampling, data augmentation and fine-tuning are compared across the two network architectures."
+          },
+          {
+            "title": "Reproducible materials",
+            "text": "Notebooks, trained weights, dataset notes and a project report document the experiments and evaluation."
+          }
+        ],
+        "outcome": "The repository provides training and inference notebooks, final ResNet50 weights and an alternative ResNet18 checkpoint. Training was written for Google Colab and requires adapting the dataset and export paths before rerunning.",
+        "credits": "Team: Luigi Autorino, Emanuel Chirico and Alessio Ferrara. Summary based on the project README."
+      }
     },
     {
       "title": "Home Wi-Fi",
@@ -94,7 +225,8 @@
         "Wi-Fi"
       ],
       "url": "https://github.com/EmanuelChirico/Domestic-WiFi-Optimization",
-      "featured": false
+      "featured": false,
+      "id": "home-wifi"
     },
     {
       "title": "E-commerce",
@@ -108,7 +240,8 @@
         "Web"
       ],
       "url": "https://github.com/EmanuelChirico/Tecnologie-Web-Project",
-      "featured": false
+      "featured": false,
+      "id": "e-commerce"
     },
     {
       "title": "Contact Manager",
@@ -122,7 +255,8 @@
         "Software Design"
       ],
       "url": "https://github.com/EmanuelChirico/Progetto_ingegneria_del_software_gruppo_4",
-      "featured": false
+      "featured": false,
+      "id": "contact-manager"
     }
   ]
 }
