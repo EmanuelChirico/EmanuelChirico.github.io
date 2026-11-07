@@ -1,122 +1,127 @@
 {
-  "_schema": {
-    "_nota": "Questo blocco è solo documentazione: il sito lo ignora. Aggiungi progetti nell'array qui sotto.",
-    "title": "Titolo grande sulla card e nell'archivio.",
-    "sub": "Categoria breve. Appare sotto il titolo e come filtro implicito.",
-    "badge": "Etichetta rossa in alto a destra sulla card (es. Flagship, PyTorch).",
-    "year": "Anno. Ordina l'archivio dal più recente.",
-    "desc": "Una o due frasi. Visibile solo nell'archivio.",
-    "tags": "Lista di parole chiave. Generano automaticamente i filtri dell'archivio.",
-    "art": "Palette di sfondo quando NON c'è immagine: a1 ruggine, a2 ambra, a3 sabbia, a4 borgogna, a5 crema, a6 caffè.",
-    "img": "Copertina 16:9, min 1200px. Percorso relativo (es. 'img/passman.jpg') o URL. Lascia '' per usare lo sfondo grafico.",
-    "url": "Link al progetto. Usa '#' per nasconderlo.",
-    "featured": "true = compare nel rolodex 3D in home. false = solo nell'archivio."
+  "_source": {
+    "profile": "https://github.com/EmanuelChirico",
+    "verified_on": "2026-11-07",
+    "scope": "Public project repositories owned by EmanuelChirico and public team projects pinned on the GitHub profile. The profile repository itself is excluded.",
+    "pinned_repositories": [
+      "https://github.com/fra343/Luma-IoT-Project",
+      "https://github.com/EmanuelChirico/Aequitas",
+      "https://github.com/Luigii11/VibeFlow",
+      "https://github.com/matteodonofrio003/SafeStep-XR",
+      "https://github.com/Luigii11/Waste-Sorting-Neural-Network"
+    ]
   },
   "projects": [
     {
-      "title": "Passman",
-      "sub": "Security · Rust",
-      "badge": "Flagship",
+      "title": "LUMA",
+      "sub": "Embedded / Smart Home",
+      "badge": "ESP32 / MQTT",
       "year": "2026",
-      "desc": "Vault local-first in Rust. Derivazione di chiave con Argon2id, cifratura autenticata e un threat model scritto che copre attacchi offline e memory disclosure.",
+      "desc": "Smart home prototype with two ESP32 boards running MicroPython: curtain control, keypad access, environmental sensing and ventilation, coordinated through MQTT.",
       "tags": [
-        "Rust",
-        "Crittografia",
-        "Sistemi"
+        "Embedded",
+        "IoT",
+        "MicroPython",
+        "MQTT"
       ],
-      "art": "a1",
-      "img": "",
-      "url": "#",
+      "url": "https://github.com/fra343/Luma-IoT-Project",
       "featured": true
     },
     {
       "title": "Aequitas",
-      "sub": "Crittografia",
-      "badge": "Formal",
-      "year": "2025",
-      "desc": "Protocollo di voto elettronico con analisi di sicurezza formale: segretezza del voto, verificabilità e resistenza alla coercizione, specificate su quattro work package.",
-      "tags": [
-        "Crittografia",
-        "Modellazione formale"
-      ],
-      "art": "a2",
-      "img": "",
-      "url": "#",
-      "featured": true
-    },
-    {
-      "title": "Waste AI",
-      "sub": "Machine Learning",
-      "badge": "PyTorch",
-      "year": "2025",
-      "desc": "Transfer learning con ResNet18/50 su oltre 10 esperimenti controllati, per isolare l'effetto reale di oversampling, augmentation e profondità di fine-tuning.",
+      "sub": "Cryptography",
+      "badge": "Python / Flask",
+      "year": "2026",
+      "desc": "Verifiable e-voting prototype with RSA-OAEP encryption, Shamir secret sharing and ballot inclusion receipts based on Merkle trees.",
       "tags": [
         "Python",
-        "Machine Learning"
+        "Cryptography",
+        "Flask"
       ],
-      "art": "a3",
-      "img": "",
-      "url": "#",
-      "featured": true
-    },
-    {
-      "title": "Minervas",
-      "sub": "Backend · AI",
-      "badge": "vLLM",
-      "year": "2025",
-      "desc": "Chatbot WhatsApp Business portato da prototipo a server GPU in produzione: FastAPI, Redis, MongoDB e inferenza vLLM dietro le webhook API di Meta.",
-      "tags": [
-        "Python",
-        "Backend",
-        "Machine Learning"
-      ],
-      "art": "a4",
-      "img": "",
-      "url": "#",
+      "url": "https://github.com/EmanuelChirico/Aequitas",
       "featured": true
     },
     {
       "title": "VibeFlow",
-      "sub": "Software Design",
-      "badge": "JavaFX",
-      "year": "2024",
-      "desc": "Music manager in JavaFX costruito su Observer, State, Command e Strategy, con documentazione UML completa e sviluppo di squadra a sprint.",
+      "sub": "Software Architecture",
+      "badge": "Java / JavaFX",
+      "year": "2026",
+      "desc": "Desktop music player with a track library, playlists and interchangeable playback modes, built as a JavaFX team project using Command, Observer and State patterns.",
       "tags": [
         "Java",
-        "Design pattern"
+        "JavaFX",
+        "Design Patterns"
       ],
-      "art": "a5",
-      "img": "",
-      "url": "#",
+      "url": "https://github.com/Luigii11/VibeFlow",
       "featured": true
     },
     {
-      "title": "π Frame",
-      "sub": "Raspberry Pi",
-      "badge": "DIY",
-      "year": "2024",
-      "desc": "Cornice digitale su Raspberry Pi: sincronizzazione delle foto, dimming automatico e avvio a prova di stacco della corrente.",
+      "title": "SafeStep-XR",
+      "sub": "XR simulation",
+      "badge": "Unity / C#",
+      "year": "2026",
+      "desc": "Hackathon project simulating industrial emergency shutdown procedures in virtual reality, with guided sequences, timers and immersive interactions.",
       "tags": [
-        "Linux",
-        "Hardware"
+        "C#",
+        "Unity",
+        "XR"
       ],
-      "art": "a6",
-      "img": "",
-      "url": "#",
+      "url": "https://github.com/matteodonofrio003/SafeStep-XR",
       "featured": true
     },
     {
-      "title": "Progetto minore",
-      "sub": "Esempio d'archivio",
-      "badge": "Archivio",
-      "year": "2024",
-      "desc": "Questo progetto ha featured: false, quindi compare solo nell'archivio e non nel rolodex in home. Duplica questo blocco per aggiungerne altri.",
+      "title": "Waste Sorting",
+      "sub": "Machine Learning",
+      "badge": "PyTorch / ResNet",
+      "year": "2026",
+      "desc": "Eight-class waste image classification with ResNet18 and ResNet50, exploring transfer learning, data augmentation, oversampling and fine-tuning.",
       "tags": [
-        "Python"
+        "Python",
+        "PyTorch",
+        "Machine Learning"
       ],
-      "art": "a3",
-      "img": "",
-      "url": "#",
+      "url": "https://github.com/Luigii11/Waste-Sorting-Neural-Network",
+      "featured": true
+    },
+    {
+      "title": "Home Wi-Fi",
+      "sub": "Wireless networking",
+      "badge": "NetSpot / OneMesh",
+      "year": "2025",
+      "desc": "Home Wi-Fi coverage and interference analysis using NetSpot heatmaps, followed by network optimization with TP-Link OneMesh.",
+      "tags": [
+        "Networking",
+        "Wi-Fi"
+      ],
+      "url": "https://github.com/EmanuelChirico/Domestic-WiFi-Optimization",
+      "featured": false
+    },
+    {
+      "title": "E-commerce",
+      "sub": "Web development",
+      "badge": "PHP / JavaScript",
+      "year": "2025",
+      "desc": "Web project featuring a clothing catalogue, men’s, women’s and outlet sections, sign-in pages and a shopping cart interface.",
+      "tags": [
+        "PHP",
+        "JavaScript",
+        "Web"
+      ],
+      "url": "https://github.com/EmanuelChirico/Tecnologie-Web-Project",
+      "featured": false
+    },
+    {
+      "title": "Contact Manager",
+      "sub": "Software Design",
+      "badge": "Java / JavaFX",
+      "year": "2024",
+      "desc": "Desktop contact manager developed as a team project, with a JavaFX interface, design documentation and automated tests.",
+      "tags": [
+        "Java",
+        "JavaFX",
+        "Software Design"
+      ],
+      "url": "https://github.com/EmanuelChirico/Progetto_ingegneria_del_software_gruppo_4",
       "featured": false
     }
   ]

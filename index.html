@@ -1,19 +1,20 @@
 <!DOCTYPE html>
-<html lang="it">
+<html lang="en">
 <head>
 <meta charset="UTF-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-<title>Emanuel- Computer Engineer</title>
-<meta name="description" content="Portfolio di Emanuel — developer. Sistemi, sicurezza, machine learning." />
+<title>Emanuel Chirico | Embedded Systems &amp; Computer Engineering</title>
+<meta name="description" content="Emanuel Chirico, MSc Computer Engineering student at the University of Salerno. Embedded systems, real-time systems, critical systems and AI. Explore public academic and team projects." />
 <link rel="preconnect" href="https://fonts.googleapis.com" />
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
 <link href="https://fonts.googleapis.com/css2?family=Anton&family=Italianno&family=Inter:wght@400;500;600&family=JetBrains+Mono:wght@700&display=swap" rel="stylesheet" />
+<link rel="icon" type="image/svg+xml" href="data:image/svg+xml,%3Csvg%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%20viewBox%3D%220%200%2064%2064%22%3E%3Crect%20width%3D%2264%22%20height%3D%2264%22%20fill%3D%22%230c0906%22%2F%3E%3Ctext%20x%3D%2232%22%20y%3D%2243%22%20text-anchor%3D%22middle%22%20font-family%3D%22Arial%2Csans-serif%22%20font-weight%3D%22700%22%20font-size%3D%2232%22%20fill%3D%22%23f2ead8%22%3EEC%3C%2Ftext%3E%3C%2Fsvg%3E" />
 <style>
   /* ========== VARIABILI ========== */
   :root {
     --bg: #0c0906;
     --cream: #f2ead8;
-    --muted: rgba(242,234,216,0.45);
+    --muted: rgba(242,234,216,0.68);
     --red: #b8321f;
     --line: rgba(242,234,216,0.8);
     --box: rgba(242,234,216,0.28);
@@ -24,7 +25,7 @@
   body.light {
     --bg: #ece4d2;
     --cream: #171310;
-    --muted: rgba(23,19,16,0.5);
+    --muted: rgba(23,19,16,0.68);
     --line: rgba(23,19,16,0.8);
     --box: rgba(23,19,16,0.3);
   }
@@ -43,9 +44,6 @@
   a { color:inherit; }
   :focus-visible { outline:2px solid var(--red); outline-offset:3px; }
 
-  @media (hover:hover) and (pointer:fine) {
-    body.cursor-on, body.cursor-on a, body.cursor-on button { cursor:none; }
-  }
 
   #scrollSpace { width:1px; }
 
@@ -81,7 +79,7 @@
 
   /* ========== TOOLS ========== */
   .tools {
-    position:fixed; bottom:36px; left:44px; z-index:60;
+    position:fixed; bottom:36px; left:44px; z-index:140;
     display:flex; gap:14px;
   }
   .tools button {
@@ -95,225 +93,78 @@
   }
   .tools button:hover { color:var(--cream); border-color:var(--cream); }
 
-  /* ========== STAGE 3D – ROLODEX CONCAVO ========== */
+  /* ========== PROJECT CAROUSEL ========== */
   .stage {
-    position:fixed; inset:0; z-index:10;
-    opacity:0; /* gestita via JS: entra in dissolvenza dopo l'hero */
-    perspective:1200px;
-    perspective-origin:50% 32%;   /* dall'alto */
-    overflow:hidden;
+    position:fixed; inset:0; z-index:10; opacity:0; overflow:hidden;
+    pointer-events:none;
   }
-
   .card {
-    position:absolute;
-    top:50%; left:50%;
-    width:min(54vw, 920px);
-    aspect-ratio:16 / 9;
-    box-shadow:0 30px 70px rgba(0,0,0,0.65);
+    position:absolute; top:52%; left:38%;
+    width:min(61vw, 900px); aspect-ratio:1.65;
+    display:block; text-decoration:none;
     will-change:transform, opacity;
-    backface-visibility:hidden;
-    text-decoration:none;
-    display:block;
-    transform-style:preserve-3d;
-    border-radius:8px;
+    transition:opacity 0.25s;
+    color:var(--cream);
   }
-  /* riflesso che cade sulla card successiva */
-  .card .refl {
-    position:absolute; top:100%; left:0; right:0; height:100%;
-    margin-top:2px; border-radius:8px; overflow:hidden;
-    transform:scaleY(-1);
-    opacity:0.22; pointer-events:none;
-    -webkit-mask-image:linear-gradient(to top, rgba(0,0,0,0.85), transparent 50%);
-            mask-image:linear-gradient(to top, rgba(0,0,0,0.85), transparent 50%);
-  }
-  .card .refl .art { filter:blur(1px) saturate(0.85); }
-
   .card .art {
-    position:absolute; inset:0;
-    display:flex;
-    flex-direction:column;
-    justify-content:space-between;
-    padding:28px 32px;
-    border-radius:8px;
-    overflow:hidden;
+    position:absolute; inset:0; padding:28px 0;
+    display:flex; flex-direction:column; gap:20px; overflow:hidden;
+    background:var(--bg);
+    border-top:1px solid var(--line); border-bottom:1px solid var(--box);
   }
-
-  /* sfondi — un'unica famiglia calda coerente col tema (nero fumo / crema / rosso),
-     differenziata da un colore d'accento per card, non da tinte che litigano */
-  .card .art {
-    background:
-      repeating-linear-gradient(0deg,  rgba(242,234,216,0.032) 0 1px, transparent 1px 44px),
-      repeating-linear-gradient(90deg, rgba(242,234,216,0.032) 0 1px, transparent 1px 44px),
-      radial-gradient(130% 150% at var(--gx,30%) var(--gy,25%), var(--tone,#2a1a10) 0%, #16100a 55%, #0a0705 100%);
-    border:1px solid rgba(242,234,216,0.12);
-    transition:border-color 0.5s ease;
+  .card .top, .card .bottom {
+    display:flex; justify-content:space-between; align-items:center;
+    gap:20px; position:relative; z-index:1;
   }
-  .card:hover > .art {
-    border-color:color-mix(in srgb, var(--acc) 45%, transparent);
+  .card .year, .card .badge, .card .number, .card .name {
+    font-family:var(--body); font-size:11px; font-weight:500;
+    letter-spacing:0.16em; text-transform:uppercase;
   }
-  .a1 { --acc:#b8321f; --tone:#3a1710; --gx:28%; --gy:22%; }  /* ruggine  */
-  .a2 { --acc:#c9822d; --tone:#38270f; --gx:70%; --gy:25%; }  /* ambra    */
-  .a3 { --acc:#d8c39a; --tone:#33291a; --gx:42%; --gy:72%; }  /* sabbia   */
-  .a4 { --acc:#7e2231; --tone:#2e1218; --gx:64%; --gy:68%; }  /* borgogna */
-  .a5 { --acc:#f2ead8; --tone:#26221d; --gx:30%; --gy:60%; }  /* crema    */
-  .a6 { --acc:#8a5a2b; --tone:#30200f; --gx:60%; --gy:30%; }  /* caffè    */
-
-  /* riga d'accento in alto: parte corta, al hover corre per tutta la card */
-  .card .art::before {
-    content:'';
-    position:absolute; top:0; left:0; right:0; height:3px;
-    background:var(--acc);
-    transform:scaleX(0.3);
-    transform-origin:left;
-    transition:transform 0.6s cubic-bezier(0.22,1,0.36,1);
-    z-index:2;
-  }
-  .card:hover > .art::before { transform:scaleX(1); }
-  /* grana da stampa, lega tutte le copertine */
-  .card .grain {
-    position:absolute; inset:0;
-    background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='160' height='160'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='2'/%3E%3C/filter%3E%3Crect width='160' height='160' filter='url(%23n)' opacity='0.5'/%3E%3C/svg%3E");
-    opacity:0.11; mix-blend-mode:overlay; pointer-events:none;
-  }
-  /* immagine di copertina personalizzabile (campo "img" nei DATI) */
-  .card .cover {
-    position:absolute; inset:0; z-index:0;
-    width:100%; height:100%;
-    object-fit:cover; border-radius:8px;
-    transition:transform 0.8s cubic-bezier(0.22,1,0.36,1);
-  }
-  .card:hover > .art .cover { transform:scale(1.04); }
-  /* velo scuro sopra l'immagine: mantiene leggibili titolo e testi */
-  .card .shade {
-    position:absolute; inset:0; z-index:0;
-    border-radius:8px; pointer-events:none;
-    background:linear-gradient(180deg,
-      rgba(10,7,5,0.62) 0%,
-      rgba(10,7,5,0.18) 45%,
-      rgba(10,7,5,0.66) 100%);
-  }
-  /* il contenuto testuale sta sempre sopra immagine e velo */
-  .card .top, .card .sub, .card .bottom { position:relative; z-index:2; }
-
-  /* numerone fantasma: solo contorno, più elegante del riempimento pieno */
-  .card .ghost {
-    position:absolute; right:16px; bottom:-0.16em;
-    font-family:var(--display); font-size:clamp(110px, 15vw, 250px);
-    line-height:1; color:transparent;
-    -webkit-text-stroke:2px var(--acc);
-    opacity:0.20;
-    pointer-events:none; user-select:none;
-  }
-
-  /* parentesi agli angoli, eco del cursore { █ } */
-  .card .hud { position:absolute; inset:14px; pointer-events:none; z-index:2; }
-  .card .hud::before, .card .hud::after {
-    content:''; position:absolute; width:22px; height:22px;
-    border:2px solid var(--acc); opacity:0.5;
-    transition:opacity 0.4s ease, width 0.4s ease, height 0.4s ease;
-  }
-  .card .hud::before { top:0; left:0; border-right:none; border-bottom:none; }
-  .card .hud::after  { bottom:0; right:0; border-left:none; border-top:none; }
-  .card:hover .hud::before, .card:hover .hud::after {
-    opacity:0.95; width:30px; height:30px;
-  }
-
-  /* top row: title + year/badge */
-  .card .top {
-    display:flex;
-    justify-content:space-between;
-    align-items:flex-start;
-    width:100%;
-  }
+  .card .year, .card .number { color:var(--muted); }
+  .card .badge { color:var(--red); }
   .card .title {
-    font-family:var(--display);
-    font-size:clamp(48px, 7vw, 110px);
-    letter-spacing:0.04em;
-    text-transform:uppercase;
-    color:rgba(255,255,255,0.95);
-    text-shadow:0 4px 30px rgba(0,0,0,0.5);
-    line-height:0.95;
-    margin-top:-6px;
+    position:relative; z-index:1; display:block;
+    margin-top:auto; max-width:95%;
+    font-family:var(--display); font-size:clamp(42px, 6.4vw, 96px);
+    line-height:1.05; letter-spacing:0.02em; text-transform:uppercase;
+    transition:color 0.25s;
   }
-  .card .right {
-    display:flex;
-    flex-direction:column;
-    align-items:flex-end;
-    gap:4px;
+  .card:hover .title { color:var(--red); }
+  .card .summary {
+    position:relative; z-index:1; max-width:52ch;
+    font-size:clamp(13px, 1.1vw, 16px); line-height:1.7;
+    color:color-mix(in srgb, var(--cream) 68%, var(--bg));
   }
-  .card .year {
-    font-family:var(--display);
-    font-size:clamp(18px, 1.4vw, 28px);
-    letter-spacing:0.08em;
-    color:rgba(255,255,255,0.7);
+  .card .bottom { margin-top:auto; }
+  .card .name { border-bottom:1px solid var(--red); padding-bottom:5px; }
+  .card .ghost {
+    position:absolute; right:0; bottom:-0.15em;
+    font-family:var(--display); font-size:clamp(120px, 18vw, 270px);
+    line-height:1; color:transparent; -webkit-text-stroke:1px var(--cream);
+    opacity:0.06; pointer-events:none;
   }
-  .card .badge {
-    font-family:var(--body);
-    font-weight:600;
-    font-size:clamp(9px, 0.8vw, 13px);
-    letter-spacing:0.08em;
-    text-transform:uppercase;
-    color:#fff;
-    background:var(--red);
-    padding:4px 12px;
-    border-radius:3px;
-    box-shadow:0 4px 12px rgba(184,50,31,0.35);
-    transform:rotate(2deg);
-    transition:transform 0.4s cubic-bezier(0.22,1,0.36,1);
+  .carousel-nav { display:flex; justify-content:flex-end; gap:10px; margin-top:24px; }
+  .carousel-nav button {
+    width:44px; height:40px; background:none; border:1px solid var(--box);
+    color:var(--cream); font-size:20px; cursor:pointer;
   }
-  .card:hover .badge { transform:rotate(0deg); }
-
-  /* center: subtitle */
-  .card .sub::before { content:'// '; color:var(--acc); }
-  .card .sub {
-    font-family:var(--display);
-    font-size:clamp(18px, 2vw, 32px);
-    letter-spacing:0.12em;
-    text-transform:uppercase;
-    color:rgba(255,255,255,0.75);
-    text-shadow:0 2px 20px rgba(0,0,0,0.4);
-    margin-top:auto;
-    margin-bottom:auto;
-    padding:8px 0;
-  }
-
-  /* bottom: name + number */
-  .card .bottom {
-    display:flex;
-    justify-content:space-between;
-    align-items:flex-end;
-    width:100%;
-    margin-top:auto;
-  }
-  .card .name {
-    font-family:var(--body);
-    font-weight:500;
-    font-size:clamp(14px, 1.1vw, 19px);
-    letter-spacing:0.12em;
-    text-transform:uppercase;
-    color:rgba(255,255,255,0.7);
-  }
-  .card .number {
-    font-family:var(--display);
-    font-size:clamp(14px, 1.3vw, 22px);
-    letter-spacing:0.15em;
-    color:rgba(255,255,255,0.5);
-  }
+  .carousel-nav button:hover { border-color:var(--red); color:var(--red); }
+  .carousel-nav button:disabled { opacity:0.3; cursor:default; }
 
   /* ========== META ========== */
   .meta {
     position:fixed; right:48px; top:50%; transform:translateY(-38%);
-    z-index:40; text-align:right; max-width:420px;
+    z-index:40; text-align:right; max-width:23vw;
     transition:opacity 0.25s;
   }
   .meta.swap { opacity:0; }
-  .meta.offstage { opacity:0; pointer-events:none; }
+  .meta.offstage { opacity:0; visibility:hidden; pointer-events:none; }
   .meta .cat {
     font-family:var(--script); font-size:42px; color:var(--red);
     line-height:1; display:block; margin-bottom:4px;
   }
   .meta h2 {
-    font-family:var(--display); font-size:clamp(34px,4.2vw,64px);
+    font-family:var(--display); font-size:clamp(26px,2.5vw,40px);
     letter-spacing:0.05em; line-height:1.02; text-transform:uppercase;
   }
   .meta .who {
@@ -342,37 +193,39 @@
   }
   .hero .prompt {
     font-family:"JetBrains Mono", monospace;
-    font-size:clamp(13px,1.4vw,17px);
+    font-size:clamp(11px,1.1vw,14px);
+    padding:0 24px; line-height:1.6;
     color:var(--muted); margin-bottom:18px;
   }
-  .hero .prompt .cmd { color:#4ade80; }
   .hero h1 {
     font-family:var(--display);
     font-size:clamp(72px,15vw,240px);
     letter-spacing:0.04em; text-transform:uppercase;
     line-height:0.95; min-height:1em;
   }
-  .hero .tcaret {
-  display: inline-block;
-  width: 0.35em;            /* Larghezza proporzionale al testo */
-  height: 0.8em;            /* Altezza proporzionale al testo */
-  background-color: #4ade80; /* Disegniamo il blocco con il background */
-  color: transparent;       /* Rendiamo invisibile il carattere "█" dell'HTML */
-  animation: caretBlink 0.85s steps(1,end) infinite;
-  margin-left: 12px;        /* Spazio tra la L e il cursore */
-  transform: translateY(0.05em); /* Allineamento millimetrico sull'asse Y */
-  visibility: hidden;
-}
-  /* glifi non ancora "decodificati" del nome (effetto da idea1) */
-  .hero h1 .gl { color:var(--red); }
-  .hero .role, .hero .scrollcue { opacity:1; transition:opacity 0.6s; }
-  .hero.typed .role, .hero.typed .scrollcue { opacity:1; }
   .hero .role {
     margin-top:22px; font-weight:500;
-    font-size:clamp(14px,1.6vw,19px);
-    letter-spacing:0.28em; text-transform:uppercase;
+    font-size:clamp(12px,1.2vw,16px);
+    max-width:900px; padding:0 24px; line-height:1.9;
+    letter-spacing:0.12em; text-transform:uppercase;
     color:var(--muted);
   }
+  .hero-name-line { display:block; white-space:nowrap; }
+  .hero h1 .gl { color:var(--red); }
+  .hero .tcaret {
+    display:inline-block; width:0.16em; height:0.7em; margin-left:0.06em;
+    background:#4ade80; vertical-align:0.02em;
+    visibility:hidden; animation:caretBlink 0.85s steps(1,end) infinite;
+  }
+  .hero-actions { display:flex; gap:16px; flex-wrap:wrap; justify-content:center; margin-top:24px; }
+  .hero-actions button {
+    background:var(--bg); border:1px solid var(--box); padding:12px 20px;
+    font-family:var(--display); font-size:13px; letter-spacing:0.1em;
+    text-transform:uppercase; color:var(--cream); cursor:pointer;
+  }
+  .hero-actions button:hover { border-color:var(--red); color:var(--red); }
+  body.panel-open { overflow:hidden; }
+  body.panel-open .tools { visibility:hidden; }
   .hero .role .sep { color:var(--red); padding:0 10px; }
   .hero .scrollcue {
     position:absolute; bottom:42px; left:50%; transform:translateX(-50%);
@@ -433,17 +286,17 @@
 
   /* ========== ABOUT – proporzioni riviste ========== */
  .about-panel {
-  padding: 90px 30px 80px 30px; /* Ridotto il valore in alto da 120px a 90px */
+  padding: 130px 44px 80px;
   align-items: flex-start; 
   overflow-y: auto; 
 }
   .about-wrapper {
     width: 100%;
-    max-width: 1400px;
+    max-width: 1200px;
     display: grid;
-    grid-template-columns: 1fr 1fr;
+    grid-template-columns: 1.2fr 0.8fr;
     gap: 60px;
-    align-items: center;
+    align-items: start;
   }
   .about-left {
     position: relative;
@@ -455,10 +308,10 @@
     display: block;
     margin-bottom: 4px;
   }
-  .about-name {
+  .about-left .about-name {
   font-family: var(--display);
-  font-size: clamp(80px, 12vw, 220px); 
-  line-height: 0.85; 
+  font-size: clamp(68px, 8vw, 128px);
+  line-height: 0.96;
   color: var(--red);
   text-transform: uppercase;
   margin: 12px 0 20px 0;
@@ -469,7 +322,7 @@
     background: var(--cream);
     margin: 24px 0 28px 0;
   }
-  .about-intro {
+  .about-left .about-intro {
     font-family: var(--display);
     text-transform: uppercase;
     font-size: 22px;
@@ -478,7 +331,7 @@
     line-height: 1.3;
   }
   .about-text {
-    margin-top: 32px;
+    margin-top: 24px;
     max-width: 600px;
   }
   .about-text p {
@@ -493,10 +346,23 @@
   align-items: center;
   margin-top: 15px; /* Abbassato da 50px a 15px */
 }
+  .about-focus-label {
+    display:block; margin:28px 0 8px; color:var(--red);
+    font-family:var(--display); font-size:13px; letter-spacing:0.12em;
+    text-transform:uppercase;
+  }
+  .about-focus {
+    list-style:none; display:grid; grid-template-columns:1fr 1fr;
+    gap:0 24px; padding:0; max-width:600px;
+  }
+  .about-focus li {
+    border-bottom:1px solid var(--box); padding:12px 0;
+    font-size:14px; color:var(--cream);
+  }
 
 .about-right img {
   width: 100%; /* Corretto da 800% a 100% */
-  max-width: 400px;
+  max-width: 340px;
   filter: grayscale(100%);
   border-radius: 8px;
   box-shadow: 0 20px 40px rgba(0,0,0,0.5);
@@ -690,31 +556,6 @@
     font-family:var(--body); font-size:11.5px; letter-spacing:0.08em; color:var(--muted);
   }
 
-  /* ========== CURSORE ========== */
-  .cursor {
-    position:fixed; z-index:500; top:0; left:0;
-    pointer-events:none; display:none;
-    transform:translate(-50%,-50%);
-    font-family:"JetBrains Mono", monospace;
-    font-size:20px; line-height:1;
-    color:#4ade80;
-    text-shadow:0 0 10px rgba(74,222,128,0.55);
-    transition:scale 0.18s, color 0.18s;
-    white-space:nowrap;
-  }
-  .cursor .brace { opacity:0; transition:opacity 0.18s; }
-  .cursor .block { display:inline-block; }
-  .cursor.hot {
-    scale:1.35; color:#f2ead8;
-    text-shadow:0 0 12px rgba(242,234,216,0.5);
-  }
-  .cursor.hot .brace { opacity:1; }
-  .cursor.hot .block { animation:caretBlink 0.85s steps(1,end) infinite; }
-
-  @media (hover:hover) and (pointer:fine) {
-    body.cursor-on .cursor { display:block; }
-  }
-
   /* ========== RESPONSIVE ========== */
   @media (max-width:900px) {
     .lockup { left:20px; top:20px; }
@@ -723,8 +564,8 @@
     .mainnav { right:20px; top:24px; }
     .mainnav ul { gap:20px; }
     .mainnav button { font-size:14px; }
-    .card { width:88vw; }
-    .card .art { padding:20px; }
+    .card { left:50%; top:43%; width:88vw; }
+    .card .art { padding:22px 0; }
     .meta {
       right:20px; left:20px;
       top:auto; bottom:104px;
@@ -736,7 +577,11 @@
     .tools { left:20px; bottom:24px; }
     .tools button { padding:10px 18px; font-size:12px; }
     .hero .role { padding:0 20px; letter-spacing:0.18em; }
-    .stage { perspective-origin:50% 28%; }
+    .meta h2 { font-size:28px; }
+    .meta .cat { font-size:27px; }
+    .meta .count { display:inline-block; margin:14px 20px 0 0; }
+    .meta .open { margin-top:14px; }
+    .carousel-nav { margin-top:14px; }
 
     /* about mobile */
     .about-wrapper {
@@ -745,7 +590,7 @@
       text-align: center;
     }
     .about-left {
-      order: 2;
+      order: 0;
     }
     .about-right {
       order: 1;
@@ -788,32 +633,48 @@
     .colophon { justify-content:center; text-align:center; }
   }
 
+  @media (max-width:600px) {
+    .mainnav { top:94px; left:20px; right:20px; }
+    .mainnav ul { justify-content:space-between; gap:12px; }
+    .hero h1 { font-size:23vw; }
+    .hero .role { font-size:11px; line-height:1.9; }
+    .card { top:44%; width:calc(100vw - 40px); height:43vh; min-height:260px; aspect-ratio:auto; }
+    .card .art { gap:16px; padding:20px 0; }
+    .card .title { font-size:clamp(38px,11vw,62px); }
+    .card .summary { font-size:13px; }
+    .card .year, .card .badge { font-size:9px; letter-spacing:0.08em; }
+    .meta { bottom:96px; }
+    .meta h2, .meta .cat { display:none; }
+    .meta .count { float:left; margin-top:14px; }
+    .carousel-nav { display:inline-flex; margin-left:16px; vertical-align:middle; }
+    .carousel-nav button { width:36px; height:36px; }
+    .panel, .about-panel, .archive-panel { padding-top:156px; }
+  }
+
   @media (prefers-reduced-motion:reduce) {
-    .cursor { display:none !important; }
-    .cursor.hot .block { animation:none; }
     .hero .scrollcue .line { animation:none; transform:scaleY(1); }
     .hero .tcaret { animation:none; }
-    .card .cover, .card .art::before, .card .badge, .card .hud::before, .card .hud::after { transition:none; }
+    .card, .card .title { transition:none; }
     .arch-row, .arch-row::before, .bigmail, .bigmail::after, .craft-cell { transition:none; }
   }
 </style>
 </head>
-<body class="cursor-on">
+<body>
 
 <!-- SFONDO: particelle fluttuanti (da idea1) -->
 <canvas id="field" aria-hidden="true"></canvas>
 
 <!-- HEADER -->
 <div class="lockup" id="mainLockup">
-  <span class="by">That's</span>
-  <span class="name">Emanuel</span>
+  <span class="by">Emanuel</span>
+  <span class="name">Chirico</span>
 </div>
 
-<nav class="mainnav">
+<nav class="mainnav" aria-label="Main navigation">
   <div class="rule"></div>
   <ul>
     <li><button id="navWork" class="active">Work</button></li>
-    <li><button id="navArchive">Archivio</button></li>
+    <li><button id="navArchive">Projects</button></li>
     <li><button id="navAbout">About</button></li>
     <li><button id="navContact">Contact</button></li>
   </ul>
@@ -821,53 +682,68 @@
 
 <!-- TOOLS -->
 <div class="tools">
-  <button id="lightBtn">Light</button>
-  <button id="shuffleBtn">Shuffle</button>
+  <button id="lightBtn" aria-label="Switch to light theme">Light mode</button>
+  <button id="shuffleBtn" aria-label="Reorder featured projects">Reorder</button>
 </div>
 
 <!-- HERO -->
 <header class="hero" id="hero">
-  <p class="prompt" aria-hidden="true">emanuel@portfolio:~$&nbsp;<span class="cmd">whoami</span></p>
-  <h1 aria-label="Emanuel"><span id="scrambleName" aria-hidden="true">EMANUEL</span><span class="tcaret" id="tcaret">█</span></h1>
-  <p class="role">Software Developer <span class="sep">/</span> Security <span class="sep">/</span> Systems</p>
+  <p class="prompt">MSc Computer Engineering · University of Salerno</p>
+  <h1 aria-label="Emanuel Chirico"><span class="hero-name-line" aria-hidden="true"><span id="scrambleName">EMANUEL</span><span class="tcaret" id="tcaret"></span></span></h1>
+  <p class="role">Embedded Systems <span class="sep">/</span> Real-Time Systems <span class="sep">/</span> Critical Systems <span class="sep">/</span> AI</p>
+  <div class="hero-actions">
+    <button id="exploreBtn">View selected work ↓</button>
+    <button id="heroAboutBtn">About me</button>
+  </div>
   <div class="scrollcue" aria-hidden="true">
-    <span>Scroll to reveal</span>
+    <span>Scroll to explore</span>
     <span class="line"></span>
   </div>
 </header>
 
 <!-- STAGE -->
-<div class="stage" id="stage" aria-label="Progetti"></div>
+<div class="stage" id="stage" aria-label="Featured projects"></div>
 
 <!-- META -->
-<aside class="meta" id="meta">
+<aside class="meta offstage" id="meta" inert>
   <span class="cat" id="mCat"></span>
   <h2 id="mTitle"></h2>
-  <p class="who">Emanuel</p>
+  <p class="who">Public repository</p>
   <p class="count" id="mCount"></p>
-  <a class="open" id="mLink" href="#" target="_blank" rel="noopener">Apri progetto</a>
+  <a class="open" id="mLink" style="display:none" target="_blank" rel="noopener">View repository ↗</a>
+  <div class="carousel-nav" aria-label="Project navigation">
+    <button id="prevProject" aria-label="Previous project">←</button>
+    <button id="nextProject" aria-label="Next project">→</button>
+  </div>
 </aside>
 
 <!-- PANELS -->
-<div class="panel about-panel" id="panelAbout" role="dialog" aria-label="About">
+<div class="panel about-panel" id="panelAbout" role="dialog" aria-label="About" inert>
   <div class="about-wrapper">
     <div class="about-left">
       <span class="about-script">about me</span>
-      <h1 class="about-name">EMANUEL<br>CHIRICO</h1>
+      <h2 class="about-name">EMANUEL<br>CHIRICO</h2>
       <div class="about-line"></div>
-      <p class="about-intro">Software Engineer focused on Systems, Security and Artificial Intelligence.</p>
+      <p class="about-intro">Computer Engineering MSc student focused on embedded and critical systems.</p>
       <div class="about-text">
         <p>I'm currently pursuing a Master's degree in Computer Engineering at the University of Salerno.</p>
-        <p>I enjoy building software from first principles, combining system design, low-level programming and machine learning.</p>
-        <p>Every project starts with architecture, documentation and reasoning before writing production code.</p>
+        <p>My interests span real-time systems, low-level programming and AI, with a focus on how software interacts with hardware and behaves under timing and safety constraints.</p>
+        <p>I explore these areas through hands-on projects in IoT, software architecture, security and machine learning.</p>
       </div>
+      <span class="about-focus-label">Focus areas</span>
+      <ul class="about-focus" aria-label="Focus areas">
+        <li>Embedded Systems</li>
+        <li>Real-Time Systems</li>
+        <li>Critical Systems</li>
+        <li>AI</li>
+      </ul>
     </div>
     <div class="about-right">
       <img src="DSC_0536.JPG" alt="Emanuel Chirico" onerror="this.hidden=true">
       <div class="about-data">
         <div><span>LOCATION</span> Italy</div>
         <div><span>UNIVERSITY</span> University of Salerno</div>
-        <div><span>FOCUS</span> Systems • Security • AI</div>
+        <div><span>STATUS</span> MSc student</div>
         <div><span>LANGUAGES</span> Rust • Python • C • Java</div>
       </div>
       <button class="back" data-close>← Back</button>
@@ -875,39 +751,37 @@
   </div>
 </div>
 
-<div class="panel archive-panel" id="panelArchive" role="dialog" aria-label="Archivio progetti">
+<div class="panel archive-panel" id="panelArchive" role="dialog" aria-label="Project archive" inert>
   <div class="archive-inner">
     <div class="archive-head">
       <div>
-        <span class="cat">everything else</span>
-        <h2>Archivio</h2>
+        <span class="cat">project archive</span>
+        <h2>All projects</h2>
       </div>
       <span class="tally" id="archTally"></span>
     </div>
     <div class="filters" id="archFilters"></div>
     <div class="arch-list" id="archList"></div>
     <div style="text-align:center">
-      <button class="back" data-close>&larr; Torna ai progetti</button>
+      <button class="back" data-close>&larr; Back to work</button>
     </div>
   </div>
 </div>
 
-<div class="panel" id="panelContact" role="dialog" aria-label="Contatti">
+<div class="panel" id="panelContact" role="dialog" aria-label="Contact" inert>
   <div class="inner">
     <span class="cat">contact</span>
-    <h2>Let's talk about!</h2>
-    <p>Tirocini, collaborazioni o due chiacchiere tecniche: scrivimi.</p>
+    <h2>Get in touch</h2>
+    <p>For internships, research opportunities and engineering collaborations, contact me by email or LinkedIn.</p>
     <div class="links">
       <a href="mailto:emanuelchirico03@gmail.com">Email</a>
-      <a href="https://github.com/EmanuelChirico/EmanuelChirico" target="_blank" rel="noopener">GitHub</a>
+      <a href="https://github.com/EmanuelChirico" target="_blank" rel="noopener">GitHub</a>
       <a href="https://www.linkedin.com/in/emanuel-chirico-11946a395/" target="_blank" rel="noopener">LinkedIn</a>
     </div>
-    <button class="back" data-close>&larr; Torna ai progetti</button>
+    <button class="back" data-close>&larr; Back to work</button>
   </div>
 </div>
 
-<!-- CURSORE -->
-<div class="cursor" id="cursor" aria-hidden="true"><span class="brace">{</span><span class="block">█</span><span class="brace">}</span></div>
 
 <!-- SPACER -->
 <div id="scrollSpace"></div>
@@ -917,36 +791,36 @@
   <section class="craft wrap">
     <div class="craft-head">
       <div>
-        <span class="cat">how I work</span>
-        <h2>Craft</h2>
+        <span class="cat">experience through projects</span>
+        <h2>Technical foundation</h2>
       </div>
     </div>
     <div class="craft-grid">
       <div class="craft-cell">
-        <h3>Sistemi &amp; sicurezza</h3>
+        <h3>Embedded &amp; IoT</h3>
         <ul>
-          <li>Rust, C</li>
-          <li>Crittografia applicata — AEAD, KDF, firme</li>
-          <li>Threat modeling e analisi di protocolli</li>
-          <li>Amministrazione di server Linux</li>
+          <li>C and MicroPython</li>
+          <li>ESP32, sensors and actuator control</li>
+          <li>MQTT messaging and Node-RED dashboards</li>
+          <li>Hardware–software integration in a smart home prototype</li>
         </ul>
       </div>
       <div class="craft-cell">
-        <h3>Machine learning</h3>
+        <h3>AI &amp; Machine Learning</h3>
         <ul>
-          <li>PyTorch</li>
-          <li>CNN e transfer learning</li>
-          <li>Progettazione e valutazione di esperimenti</li>
-          <li>Preprocessing e data augmentation</li>
+          <li>Python and PyTorch</li>
+          <li>ResNet18/50 and transfer learning</li>
+          <li>Data augmentation and fine-tuning</li>
+          <li>Experiment design and model evaluation</li>
         </ul>
       </div>
       <div class="craft-cell">
-        <h3>Backend &amp; tooling</h3>
+        <h3>Software Engineering</h3>
         <ul>
-          <li>Python, FastAPI, Java</li>
-          <li>Docker, Redis, MongoDB</li>
-          <li>Git, fondamenti di CI</li>
-          <li>LaTeX e scrittura tecnica</li>
+          <li>Java, JavaFX and design patterns</li>
+          <li>Git, Docker and Linux</li>
+          <li>Applied cryptography through Aequitas</li>
+          <li>Team projects, testing and technical documentation</li>
         </ul>
       </div>
     </div>
@@ -954,10 +828,10 @@
 
   <section class="closing wrap">
     <span class="cat">get in touch</span>
-    <h2>Costruiamo qualcosa</h2>
+    <h2>Discuss an opportunity</h2>
     <a class="bigmail" href="mailto:emanuelchirico03@gmail.com">emanuelchirico03@gmail.com</a>
     <div class="outro-socials">
-      <a href="https://github.com/EmanuelChirico/EmanuelChirico" target="_blank" rel="noopener">GitHub</a>
+      <a href="https://github.com/EmanuelChirico" target="_blank" rel="noopener">GitHub</a>
       <a href="https://www.linkedin.com/in/emanuel-chirico-11946a395/" target="_blank" rel="noopener">LinkedIn</a>
     </div>
   </section>
@@ -965,62 +839,23 @@
   <div class="wrap">
     <div class="colophon">
       <p>© <span id="year"></span> Emanuel Chirico</p>
-      <p>Scritto a mano — nessun template, nessun tracker</p>
     </div>
   </div>
 </footer>
 
-<script id="projectsFallback" type="application/json">{"projects": [{"title": "Passman", "sub": "Security · Rust", "badge": "Flagship", "year": "2026", "desc": "Vault local-first in Rust. Derivazione di chiave con Argon2id, cifratura autenticata e un threat model scritto che copre attacchi offline e memory disclosure.", "tags": ["Rust", "Crittografia", "Sistemi"], "art": "a1", "img": "", "url": "#", "featured": true}, {"title": "Aequitas", "sub": "Crittografia", "badge": "Formal", "year": "2025", "desc": "Protocollo di voto elettronico con analisi di sicurezza formale: segretezza del voto, verificabilità e resistenza alla coercizione, specificate su quattro work package.", "tags": ["Crittografia", "Modellazione formale"], "art": "a2", "img": "", "url": "#", "featured": true}, {"title": "Waste AI", "sub": "Machine Learning", "badge": "PyTorch", "year": "2025", "desc": "Transfer learning con ResNet18/50 su oltre 10 esperimenti controllati, per isolare l'effetto reale di oversampling, augmentation e profondità di fine-tuning.", "tags": ["Python", "Machine Learning"], "art": "a3", "img": "", "url": "#", "featured": true}, {"title": "Minervas", "sub": "Backend · AI", "badge": "vLLM", "year": "2025", "desc": "Chatbot WhatsApp Business portato da prototipo a server GPU in produzione: FastAPI, Redis, MongoDB e inferenza vLLM dietro le webhook API di Meta.", "tags": ["Python", "Backend", "Machine Learning"], "art": "a4", "img": "", "url": "#", "featured": true}, {"title": "VibeFlow", "sub": "Software Design", "badge": "JavaFX", "year": "2024", "desc": "Music manager in JavaFX costruito su Observer, State, Command e Strategy, con documentazione UML completa e sviluppo di squadra a sprint.", "tags": ["Java", "Design pattern"], "art": "a5", "img": "", "url": "#", "featured": true}, {"title": "π Frame", "sub": "Raspberry Pi", "badge": "DIY", "year": "2024", "desc": "Cornice digitale su Raspberry Pi: sincronizzazione delle foto, dimming automatico e avvio a prova di stacco della corrente.", "tags": ["Linux", "Hardware"], "art": "a6", "img": "", "url": "#", "featured": true}, {"title": "Progetto minore", "sub": "Esempio d'archivio", "badge": "Archivio", "year": "2024", "desc": "Questo progetto ha featured: false, quindi compare solo nell'archivio e non nel rolodex in home. Duplica questo blocco per aggiungerne altri.", "tags": ["Python"], "art": "a3", "img": "", "url": "#", "featured": false}]}</script>
 <script>
 (() => {
-// ========== FAVICON ANIMATA — terminale che digita ==========
-(function () {
-  const SIZE = 32;
-  const canvas = document.createElement('canvas');
-  canvas.width = SIZE;
-  canvas.height = SIZE;
-  const ctx = canvas.getContext('2d');
-
-  // sequenza "digitata" — richiama l'estetica del prompt in hero
-  const frames = ['>', '>_', '></', '></>',  '{ }', '{..}', '<ok>', '>_'];
-
-  let link = document.querySelector("link[rel~='icon']");
-  if (!link) {
-    link = document.createElement('link');
-    link.rel = 'icon';
-    document.head.appendChild(link);
+  // Canvas effects are optional: privacy settings must not stop navigation or data loading.
+  function canvasContext(canvas) {
+    try { return canvas.getContext('2d'); } catch (_) { return null; }
   }
-
-  function drawFrame(text) {
-    ctx.clearRect(0, 0, SIZE, SIZE);
-    ctx.fillStyle = '#0c0906';           // stesso --bg del sito
-    ctx.fillRect(0, 0, SIZE, SIZE);
-    ctx.fillStyle = '#4ade80';           // stesso verde del cursore/prompt
-    ctx.font = 'bold 15px "JetBrains Mono", monospace';
-    ctx.textAlign = 'center';
-    ctx.textBaseline = 'middle';
-    ctx.fillText(text, SIZE / 2, SIZE / 2 + 1);
-    link.href = canvas.toDataURL('image/png');
-  }
-
-  let i = 0;
-  function tick() {
-    drawFrame(frames[i]);
-    i = (i + 1) % frames.length;
-  }
-
-  tick();
-  setInterval(tick, 450);
-})();
-
   'use strict';
   const reduceMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
-  const finePointer = window.matchMedia('(hover: hover) and (pointer: fine)').matches;
   const body = document.body;
 
   // ---------- SFONDO: particelle fluttuanti (flow field) ----------
   const fieldCanvas = document.getElementById('field');
-  const fctx = fieldCanvas.getContext('2d');
+  const fctx = canvasContext(fieldCanvas);
   let FW, FH, fdpr;
   let particles = [];
   const mouse = { x: -9999, y: -9999 };
@@ -1055,12 +890,12 @@
     pt.life = 120 + Math.random() * 240;
     pt.speed = 0.5 + Math.random() * 1.1;
     pt.color = pickTone();
-    pt.alpha = 0.10 + Math.random() * 0.22;
+    pt.alpha = 0.04 + Math.random() * 0.08;
     return pt;
   }
 
   function initParticles() {
-    const count = Math.min(650, Math.floor((FW * FH) / 2600));
+    const count = Math.min(100, Math.floor((FW * FH) / 14000));
     particles = Array.from({ length: count }, () => spawn({}));
   }
 
@@ -1075,7 +910,7 @@
 
   let ft = 0;
   function fieldFrame() {
-    ft += 0.012;
+    ft += 0.004;
     fctx.fillStyle = `rgba(${fpal.bg},0.075)`;   // scia che sfuma
     fctx.fillRect(0, 0, FW, FH);
     fctx.lineWidth = 1.1;
@@ -1126,6 +961,7 @@
   }
 
   function setFieldTheme(light) {
+    if (!fctx) return;
     fpal = light ? FIELD_PALETTES.light : FIELD_PALETTES.dark;
     fctx.fillStyle = `rgb(${fpal.bg})`;
     fctx.fillRect(0, 0, FW, FH);
@@ -1133,6 +969,7 @@
     if (reduceMotion) staticBackdrop();
   }
 
+  if (fctx) {
   fieldResize();
   initParticles();
   if (reduceMotion) staticBackdrop();
@@ -1143,6 +980,7 @@
     initParticles();
     if (reduceMotion) staticBackdrop();
   });
+  }
   window.addEventListener('mousemove', e => {
     mouse.x = e.clientX; mouse.y = e.clientY;
   }, { passive: true });
@@ -1150,7 +988,7 @@
   // ---------- DATI ----------
   // I progetti vivono in projects.json, accanto a questo file.
   // Per aggiungerne uno non serve toccare il codice: basta il JSON.
-  //   featured: true  -> card nel rolodex 3D in home
+  //   featured: true  -> card nel carosello in home
   //   featured: false -> solo nell'archivio
   const stage = document.getElementById('stage');
   const meta = document.getElementById('meta');
@@ -1164,35 +1002,25 @@
   // ---------- CARD ----------
   function buildCards() {
     cards = featured.map((p, i) => {
-      const el = document.createElement('a');
-      el.className = `card ${p.art || 'a1'}`;
-      el.href = p.url || '#';
-      if (p.url && p.url !== '#') { el.target = '_blank'; el.rel = 'noopener'; }
+      const hasLink = p.url && p.url !== '#';
+      const el = document.createElement(hasLink ? 'a' : 'div');
+      el.className = 'card';
+      if (hasLink) { el.href = p.url; el.target = '_blank'; el.rel = 'noopener'; }
 
-      // con immagine: copertina sotto, velo scuro sopra, testo sempre leggibile
-      const coverHTML = p.img
-        ? `<img class="cover" src="${p.img}" alt="" loading="lazy"><div class="shade" aria-hidden="true"></div>`
-        : '';
-      const artHTML = `
+      el.innerHTML = `
         <div class="art">
-          ${coverHTML}
           <span class="ghost js-ghost" aria-hidden="true"></span>
-          <span class="hud" aria-hidden="true"></span>
           <div class="top">
-            <span class="title">${p.title}</span>
-            <div class="right">
-              <span class="year">${p.year || ''}</span>
-              <span class="badge">${p.badge || ''}</span>
-            </div>
+            <span class="year">${p.year || ''} / ${p.sub}</span>
+            <span class="badge">${p.badge || ''}</span>
           </div>
-          <span class="sub">${p.sub}</span>
+          <span class="title">${p.title}</span>
+          <p class="summary">${p.desc || ''}</p>
           <div class="bottom">
-            <span class="name">Emanuel</span>
+            <span class="name">GitHub repository ↗</span>
             <span class="number js-num"></span>
           </div>
-          <div class="grain" aria-hidden="true"></div>
         </div>`;
-      el.innerHTML = artHTML + `<div class="refl" aria-hidden="true">${artHTML}</div>`;
       stage.appendChild(el);
       return {
         el, proj: p, slot: i, cur: i + 1.5,
@@ -1245,6 +1073,8 @@
       mCat.textContent = c.proj.sub;
       mTitle.textContent = c.proj.title;
       mCount.textContent = `${pad(slot + 1)} / ${pad(N)}`;
+      document.getElementById('prevProject').disabled = slot === 0;
+      document.getElementById('nextProject').disabled = slot === N - 1;
       if (!c.proj.url || c.proj.url === '#') mLink.style.display = 'none';
       else { mLink.style.display = ''; mLink.href = c.proj.url; }
       meta.classList.remove('swap');
@@ -1255,36 +1085,23 @@
   }
 
   // ---------- RENDER ----------
-  const TILT = 48;
-  const DEPTH = 200;
   const LERP = reduceMotion ? 1 : 0.12;
   const clamp01 = v => Math.max(0, Math.min(1, v));
 
   function render() {
     p += (targetP - p) * LERP;
 
-    // agganciata all'altezza reale della card: i bordi delle card adiacenti
-    // sfiorano quello attivo, come un nastro continuo
-    const cardH = cards[0]?.el.offsetHeight || vh() * 0.55;
-    const spacing = cardH * 0.82;
-
     cards.forEach(c => {
       c.cur += (c.slot - c.cur) * LERP;
-      const o = c.cur - p;
-      const abs = Math.abs(o);
-
-      const ty = o * spacing;
-      const rx = -o * TILT;
-      const tz = -abs * DEPTH;
-      const brightness = Math.max(0.2, 1 - abs * 0.4);
-      const opacity = abs > 2.0 ? 0 : Math.min(1, 2.0 - abs);
-
+      const offset = c.cur - p;
+      const distance = Math.abs(offset);
       c.el.style.transform =
-        `translate(-50%, -50%) translateY(${ty}px) translateZ(${tz}px) rotateX(${rx}deg)`;
-      c.el.style.filter = `brightness(${brightness})`;
-      c.el.style.opacity = opacity;
-      c.el.style.zIndex = String(Math.round(100 - abs * 14));
-      c.el.style.pointerEvents = abs < 0.5 ? 'auto' : 'none';
+        `translate(-50%, -50%) translateY(${offset * 80}px)`;
+      c.el.style.opacity = distance < 0.5 ? 1 : 0;
+      c.el.style.zIndex = String(Math.round(100 - distance * 14));
+      c.el.style.pointerEvents = distance < 0.5 ? 'auto' : 'none';
+      c.el.tabIndex = distance < 0.5 ? 0 : -1;
+      c.el.inert = distance >= 0.5;
     });
 
     // Il rolodex vive tra l'hero e l'outro:
@@ -1296,11 +1113,13 @@
     const vis = fadeIn * fadeOut;
 
     stage.style.opacity = vis;
-    stage.style.pointerEvents = vis < 0.5 ? 'none' : '';
+    stage.style.pointerEvents = 'none';
+    stage.inert = vis < 0.5 || !!document.querySelector('.panel.on');
 
     const idx = Math.round(Math.max(0, Math.min(N - 1, p)));
     setMeta(idx);
     meta.classList.toggle('offstage', vis < 0.5);
+    meta.inert = vis < 0.5 || !!document.querySelector('.panel.on');
 
     requestAnimationFrame(render);
   }
@@ -1316,7 +1135,7 @@
 
     archList.innerHTML = sorted.map(pr => {
       const tags = (pr.tags || []).join(' · ');
-      const flag = pr.featured ? '<span class="flag">In evidenza</span>' : '';
+      const flag = pr.featured ? '<span class="flag">Featured</span>' : '';
       const href = pr.url && pr.url !== '#' ? pr.url : null;
       const tag = href ? 'a' : 'div';
       const attrs = href ? ` href="${href}" target="_blank" rel="noopener"` : '';
@@ -1335,7 +1154,7 @@
     // i filtri nascono dai tag: nessuna lista da mantenere a mano
     const allTags = [...new Set(projects.flatMap(pr => pr.tags || []))].sort();
     archFilters.innerHTML =
-      `<button class="on" data-filter="*">Tutti</button>` +
+      `<button class="on" data-filter="*">All</button>` +
       allTags.map(t => `<button data-filter="${t}">${t}</button>`).join('');
 
     archFilters.querySelectorAll('button').forEach(btn => {
@@ -1357,22 +1176,24 @@
       row.classList.toggle('hide', !ok);
       if (ok) shown++;
     });
-    archTally.textContent = `${pad(shown)} ${shown === 1 ? 'progetto' : 'progetti'}`;
+    archTally.textContent = `${pad(shown)} ${shown === 1 ? 'project' : 'projects'}`;
 
     const old = archList.querySelector('.arch-empty');
     if (old) old.remove();
     if (shown === 0) {
       const e = document.createElement('p');
       e.className = 'arch-empty';
-      e.textContent = 'Nessun progetto con questo tag. Prova un altro filtro.';
+      e.textContent = 'No projects match this filter. Try another category.';
       archList.appendChild(e);
     }
   }
 
   // ---------- AVVIO ----------
   function init(data) {
-    projects = Array.isArray(data.projects) ? data.projects : [];
-    if (!projects.length) throw new Error("Nessun progetto disponibile");
+    if (!Array.isArray(data?.projects) || !data.projects.length) {
+      throw new Error('projects.json must contain a nonempty projects array');
+    }
+    projects = data.projects;
     featured = projects.filter(pr => pr.featured);
     if (!featured.length) featured = projects.slice(0, 6); // rete di sicurezza
 
@@ -1384,6 +1205,13 @@
     setMeta(0, true);
     buildArchive();
     render();
+
+    for (const [id, direction] of [['prevProject', -1], ['nextProject', 1]]) {
+      document.getElementById(id).addEventListener('click', () => {
+        const slot = Math.max(0, Math.min(N - 1, Math.round(targetP) + direction));
+        window.scrollTo({ top: HERO_H() + slot * vh(), behavior: reduceMotion ? 'auto' : 'smooth' });
+      });
+    }
 
     // ---------- SHUFFLE ----------
     document.getElementById('shuffleBtn').addEventListener('click', () => {
@@ -1403,30 +1231,27 @@
 
   function loadFailed(err) {
     console.error(err);
+    document.getElementById('shuffleBtn').disabled = true;
+    archList.innerHTML = '<p class="arch-empty">Projects are temporarily unavailable. Please reload the page.</p>';
+    archTally.textContent = 'Projects unavailable';
+    meta.classList.add('offstage');
+    meta.inert = true;
+    document.getElementById('prevProject').disabled = true;
+    document.getElementById('nextProject').disabled = true;
     stage.style.opacity = 1;
     stage.innerHTML =
       `<div style="position:absolute;inset:0;display:flex;align-items:center;
         justify-content:center;text-align:center;padding:40px">
         <p style="max-width:46ch;line-height:1.7;color:var(--muted);font-size:15px">
-          Non riesco a inizializzare i progetti.
-          Se hai aperto il file con un doppio clic, il browser blocca la lettura dei file locali:
-          avvia un server con <strong style="color:var(--cream)">python3 -m http.server</strong>
-          nella cartella del sito e apri <strong style="color:var(--cream)">localhost:8000</strong>.
-          Su GitHub Pages verifica che index.html e projects.json siano pubblicati nella stessa cartella.
+          Projects are temporarily unavailable. Please reload the page.
         </p>
       </div>`;
   }
 
-  // Caricamento progressivo: funziona anche quando il JSON esterno non viene pubblicato.
-  // Prima prova il file accanto a index.html; se non è raggiungibile usa la copia incorporata.
-  const fallbackData = JSON.parse(document.getElementById('projectsFallback').textContent);
   fetch(new URL('./projects.json', document.baseURI), { cache: 'no-cache' })
     .then(r => { if (!r.ok) throw new Error(`projects.json: HTTP ${r.status}`); return r.json(); })
     .then(init)
-    .catch(err => {
-      console.warn('Caricamento projects.json fallito; uso i progetti incorporati.', err);
-      try { init(fallbackData); } catch (fallbackErr) { loadFailed(fallbackErr); }
-    });
+    .catch(loadFailed);
 
   // ---------- NAV ----------
   const panelAbout = document.getElementById('panelAbout');
@@ -1445,8 +1270,12 @@
   ];
 
   function show(panel) {
+    body.classList.toggle('panel-open', !!panel);
+    [document.getElementById('hero'), outro, document.querySelector('.tools')].forEach(el => { el.inert = !!panel; });
     panels.forEach(([pl, btn]) => {
       pl.classList.toggle('on', pl === panel);
+      pl.inert = pl !== panel;
+      btn.setAttribute('aria-expanded', String(pl === panel));
       btn.classList.toggle('active', pl === panel);
     });
     navWork.classList.toggle('active', panel === null);
@@ -1459,6 +1288,11 @@
     if (panel) panel.scrollTop = 0;
   }
 
+  document.getElementById('exploreBtn').addEventListener('click', () => {
+    show(null);
+    window.scrollTo({ top: HERO_H(), behavior: reduceMotion ? 'auto' : 'smooth' });
+  });
+  document.getElementById('heroAboutBtn').addEventListener('click', () => show(panelAbout));
   navWork.addEventListener('click', () => show(null));
   navArchive.addEventListener('click', () => show(panelArchive));
   navAbout.addEventListener('click', () => show(panelAbout));
@@ -1474,25 +1308,12 @@
   const lightBtn = document.getElementById('lightBtn');
   lightBtn.addEventListener('click', () => {
     const light = body.classList.toggle('light');
-    lightBtn.textContent = light ? 'Dark' : 'Light';
+    lightBtn.textContent = light ? 'Dark mode' : 'Light mode';
+    lightBtn.setAttribute('aria-label', light ? 'Switch to dark theme' : 'Switch to light theme');
     setFieldTheme(light);   // le particelle seguono il tema
   });
 
-  // ---------- CURSORE ----------
-  const cursor = document.getElementById('cursor');
-  if (finePointer && !reduceMotion) {
-    window.addEventListener('mousemove', e => {
-      cursor.style.transform = `translate(${e.clientX}px, ${e.clientY}px) translate(-50%, -50%)`;
-    }, { passive: true });
-    document.addEventListener('mouseover', e => {
-      cursor.classList.toggle('hot', !!e.target.closest('a, button'));
-    });
-  } else {
-    body.classList.remove('cursor-on');
-  }
-
-  // ---------- HERO: decodifica glitch del nome ----------
-  // Il nome parte come una fila di glifi e si "decodifica" da sinistra a destra.
+  // ---------- HERO NAME ANIMATION ----------
   const hero = document.getElementById('hero');
   const nameEl = document.getElementById('scrambleName');
   const tcaret = document.getElementById('tcaret');
@@ -1502,7 +1323,6 @@
 
   if (reduceMotion) {
     nameEl.textContent = NAME;
-    tcaret.style.visibility = 'visible';
     hero.classList.add('typed');
   } else {
     nameEl.innerHTML = NAME.replace(/./g, () => `<span class="gl">${rndGlyph()}</span>`);
@@ -1527,11 +1347,11 @@
 
   // ---------- FRECCE ----------
   window.addEventListener('keydown', e => {
-    if (document.querySelector('.panel.on') || e.target.closest('input, textarea, select')) return;
+    if (document.querySelector('.panel.on') || e.target.closest?.('input, textarea, select')) return;
     if (e.key === 'ArrowDown' || e.key === 'ArrowRight') {
-      window.scrollBy({ top: vh(), behavior: 'smooth' });
+      window.scrollBy({ top: vh(), behavior: reduceMotion ? 'auto' : 'smooth' });
     } else if (e.key === 'ArrowUp' || e.key === 'ArrowLeft') {
-      window.scrollBy({ top: -vh(), behavior: 'smooth' });
+      window.scrollBy({ top: -vh(), behavior: reduceMotion ? 'auto' : 'smooth' });
     }
   });
 
