@@ -684,12 +684,6 @@
 </nav>
 </div>
 
-<!-- TOOLS -->
-<div class="tools">
-  <button id="lightBtn" aria-label="Switch to light theme">Light mode</button>
-  <button id="shuffleBtn" aria-label="Reorder featured projects">Reorder</button>
-</div>
-
 <!-- HERO -->
 <header class="hero" id="hero">
   <p class="prompt">MSc Computer Engineering · University of Salerno</p>
@@ -706,7 +700,8 @@
 </header>
 
 <!-- STAGE -->
-<div class="stage" id="stage" aria-label="Featured projects"></div>
+<p class="carousel-hint">Selected work <span>Swipe to explore ↔</span></p>
+<div class="stage" id="stage" role="region" aria-roledescription="carousel" aria-label="Featured projects" tabindex="0"></div>
 
 <!-- META -->
 <aside class="meta offstage" id="meta" inert>
@@ -720,6 +715,12 @@
     <button id="nextProject" aria-label="Next project">→</button>
   </div>
 </aside>
+
+<!-- TOOLS -->
+<div class="tools">
+  <button id="lightBtn" aria-label="Switch to light theme">Light mode</button>
+  <button id="shuffleBtn" aria-label="Reorder featured projects">Reorder</button>
+</div>
 
 <!-- PANELS -->
 <div class="panel about-panel" id="panelAbout" role="dialog" aria-label="About" inert>
@@ -856,6 +857,7 @@
   }
   'use strict';
   const reduceMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+  const compactLayout = window.matchMedia('(max-width: 900px), (max-height: 600px) and (orientation: landscape)');
   const body = document.body;
   // Reflow after rotation, font loading and browser text-size changes.
   const siteHeader = document.getElementById('siteHeader');
@@ -924,7 +926,10 @@
   }
 
   let ft = 0;
+  let fieldAnimation = 0;
   function fieldFrame() {
+    fieldAnimation = 0;
+    if (reduceMotion || compactLayout.matches) { staticBackdrop(); return; }
     ft += 0.004;
     fctx.fillStyle = `rgba(${fpal.bg},0.075)`;   // scia che sfuma
     fctx.fillRect(0, 0, FW, FH);
@@ -961,7 +966,7 @@
       fctx.lineTo(pt.x, pt.y);
       fctx.stroke();
     }
-    requestAnimationFrame(fieldFrame);
+    fieldAnimation = requestAnimationFrame(fieldFrame);
   }
 
   function staticBackdrop() {
@@ -981,19 +986,24 @@
     fctx.fillStyle = `rgb(${fpal.bg})`;
     fctx.fillRect(0, 0, FW, FH);
     particles.forEach(pt => { pt.color = pickTone(); });
-    if (reduceMotion) staticBackdrop();
+    if (reduceMotion || compactLayout.matches) staticBackdrop();
   }
 
   if (fctx) {
   fieldResize();
   initParticles();
-  if (reduceMotion) staticBackdrop();
+  if (reduceMotion || compactLayout.matches) staticBackdrop();
   else fieldFrame();
 
   window.addEventListener('resize', () => {
     fieldResize();
     initParticles();
-    if (reduceMotion) staticBackdrop();
+    if (reduceMotion || compactLayout.matches) staticBackdrop();
+  });
+  compactLayout.addEventListener('change', () => {
+    cancelAnimationFrame(fieldAnimation);
+    if (reduceMotion || compactLayout.matches) staticBackdrop();
+    else fieldFrame();
   });
   }
   window.addEventListener('mousemove', e => {
@@ -1029,7 +1039,7 @@
             <span class="year">${p.year || ''} / ${p.sub}</span>
             <span class="badge">${p.badge || ''}</span>
           </div>
-          <div class="project-identity">${projectLogo(p)}<span class="title">${p.title}</span></div>
+          <span class="title">${p.title}</span>
           <p class="summary">${p.desc || ''}</p>
           <div class="bottom">
             <span class="name">Explore project ↗</span>
@@ -1058,14 +1068,15 @@
   // ---------- SCROLL ----------
   const space = document.getElementById('scrollSpace');
   const vh = () => window.innerHeight;
-  // 1.2vh extra: l'ultima card resta centrata, poi l'outro sale con calma
-  function setSpace() { space.style.height = `${(N + 1.2) * 100}vh`; }
+  // Only the desktop presentation needs a scroll runway.
+  function setSpace() { space.style.height = compactLayout.matches ? '0px' : `${(N + 1.2) * vh()}px`; }
 
   const HERO_H = () => document.getElementById('hero').offsetHeight;
 
   let p = 0;
   let targetP = 0;
   function readScroll() {
+    if (compactLayout.matches) return;
     const past = window.scrollY - HERO_H();
     targetP = Math.max(0, Math.min(N - 1, past / vh()));
   }
@@ -1103,7 +1114,66 @@
   const LERP = reduceMotion ? 1 : 0.12;
   const clamp01 = v => Math.max(0, Math.min(1, v));
 
+  let renderFrame = 0;
+  function scheduleRender() {
+    if (!renderFrame) renderFrame = requestAnimationFrame(render);
+  }
+
+  function readCompactProject() {
+    if (!compactLayout.matches || !cards.length) return;
+    const nearest = cards.reduce((a, b) =>
+      Math.abs(a.el.offsetLeft - stage.scrollLeft) <= Math.abs(b.el.offsetLeft - stage.scrollLeft) ? a : b
+    );
+    targetP = nearest.slot;
+    setMeta(nearest.slot, true);
+  }
+
+  function scrollToProject(slot, behavior = 'smooth') {
+    const card = cards.find(c => c.slot === slot);
+    if (!card) return;
+    if (compactLayout.matches) {
+      stage.scrollTo({ left: card.el.offsetLeft, behavior: reduceMotion ? 'auto' : behavior });
+      setMeta(slot, true);
+    } else {
+      window.scrollTo({ top: HERO_H() + slot * vh(), behavior: reduceMotion ? 'auto' : behavior });
+    }
+  }
+
+  let compactWidth = 0;
+  function syncCarouselLayout() {
+    setSpace();
+    if (compactLayout.matches) {
+      const slot = Math.max(0, activeSlot);
+      [...cards].sort((a, b) => a.slot - b.slot).forEach(c => stage.appendChild(c.el));
+      cards.forEach(c => {
+        c.el.style.transform = '';
+        c.el.style.opacity = '';
+        c.el.style.zIndex = '';
+        c.el.style.pointerEvents = '';
+        c.el.tabIndex = 0;
+        c.el.inert = false;
+      });
+      stage.style.opacity = '1';
+      stage.style.pointerEvents = '';
+      stage.inert = !!document.querySelector('.panel.on');
+      meta.classList.remove('offstage', 'swap');
+      meta.inert = stage.inert;
+      compactWidth = stage.clientWidth;
+      scrollToProject(slot, 'auto');
+    } else {
+      compactWidth = 0;
+      stage.scrollLeft = 0;
+      readScroll();
+    }
+    scheduleRender();
+  }
+
+  stage.addEventListener('scroll', readCompactProject, { passive: true });
+  compactLayout.addEventListener('change', syncCarouselLayout);
+
   function render() {
+    renderFrame = 0;
+    if (compactLayout.matches) return;
     p += (targetP - p) * LERP;
 
     cards.forEach(c => {
@@ -1136,7 +1206,7 @@
     meta.classList.toggle('offstage', vis < 0.5);
     meta.inert = vis < 0.5 || !!document.querySelector('.panel.on');
 
-    requestAnimationFrame(render);
+    scheduleRender();
   }
 
   // ---------- ARCHIVIO ----------
@@ -1155,7 +1225,7 @@
       const attrs = ` href="${projectHref(pr)}"`;
       return `<${tag} class="arch-row" data-tags="${(pr.tags || []).join('|')}"${attrs}>
         <div>
-          <div class="arch-heading">${projectLogo(pr)}<h3>${pr.title}${flag}</h3></div>
+          <h3>${pr.title}${flag}</h3>
           <p>${pr.desc || ''}</p>
         </div>
         <div class="arch-right">
@@ -1214,18 +1284,26 @@
 
     buildCards();
     syncNumbers();
-    setSpace();
-    window.addEventListener('resize', () => { setSpace(); readScroll(); });
+    window.addEventListener('resize', () => {
+      setSpace();
+      if (compactLayout.matches) {
+        // Browser chrome changes height while scrolling; only real width changes need alignment.
+        if (compactWidth !== stage.clientWidth) {
+          compactWidth = stage.clientWidth;
+          scrollToProject(Math.max(0, activeSlot), 'auto');
+        }
+      } else readScroll();
+    });
     readScroll();
     setMeta(0, true);
     buildArchive();
     initProjectDetails(projects);
-    render();
+    syncCarouselLayout();
 
     for (const [id, direction] of [['prevProject', -1], ['nextProject', 1]]) {
       document.getElementById(id).addEventListener('click', () => {
-        const slot = Math.max(0, Math.min(N - 1, Math.round(targetP) + direction));
-        window.scrollTo({ top: HERO_H() + slot * vh(), behavior: reduceMotion ? 'auto' : 'smooth' });
+        const slot = Math.max(0, Math.min(N - 1, (compactLayout.matches ? activeSlot : Math.round(targetP)) + direction));
+        scrollToProject(slot);
       });
     }
 
@@ -1242,6 +1320,7 @@
       cards.forEach((c, i) => { c.slot = slots[i]; });
       syncNumbers();
       activeSlot = -1;
+      if (compactLayout.matches) syncCarouselLayout();
     });
   }
 
@@ -1302,11 +1381,18 @@
       mainLockup.style.pointerEvents = hide ? 'none' : 'auto';
     }
     if (panel) panel.scrollTop = 0;
+    if (compactLayout.matches) {
+      stage.inert = !!panel;
+      meta.inert = !!panel;
+    }
   }
 
   document.getElementById('exploreBtn').addEventListener('click', () => {
     show(null);
-    window.scrollTo({ top: HERO_H(), behavior: reduceMotion ? 'auto' : 'smooth' });
+    const top = compactLayout.matches
+      ? stage.getBoundingClientRect().top + window.scrollY - siteHeader.offsetHeight - 20
+      : HERO_H();
+    window.scrollTo({ top, behavior: reduceMotion || compactLayout.matches ? 'auto' : 'smooth' });
   });
   document.getElementById('heroAboutBtn').addEventListener('click', () => show(panelAbout));
   navWork.addEventListener('click', () => show(null));
@@ -1364,6 +1450,13 @@
   // ---------- FRECCE ----------
   window.addEventListener('keydown', e => {
     if (document.querySelector('.panel.on, .project-detail[open]') || e.target.closest?.('input, textarea, select')) return;
+    if (compactLayout.matches) {
+      if (e.target.closest?.('.stage, .meta') && ['ArrowLeft', 'ArrowRight'].includes(e.key)) {
+        e.preventDefault();
+        scrollToProject(Math.max(0, Math.min(N - 1, activeSlot + (e.key === 'ArrowRight' ? 1 : -1))));
+      }
+      return;
+    }
     if (e.key === 'ArrowDown' || e.key === 'ArrowRight') {
       window.scrollBy({ top: vh(), behavior: reduceMotion ? 'auto' : 'smooth' });
     } else if (e.key === 'ArrowUp' || e.key === 'ArrowLeft') {

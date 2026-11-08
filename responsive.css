@@ -1,5 +1,6 @@
 /* Reserve the header's actual height; scrolling content never sits underneath it. */
 :root { --header-height: 112px; }
+.carousel-hint { display: none; }
 .site-header {
   position: fixed; inset: 0 0 auto; height: 112px; z-index: 200;
   background: var(--bg); transition: background .5s;
@@ -54,40 +55,52 @@
   .about-data { row-gap: 16px; }
   .about-right { margin-top: 0; }
   .about-right .back { margin-top: 32px; }
-  .hero { min-height: 600px; padding: calc(var(--header-height) + 24px) 20px 150px; }
+  .hero { height: auto; min-height: min(100svh, 760px); padding: calc(var(--header-height) + 48px) 20px 88px; }
   .hero h1 { font-size: clamp(48px, 18vw, 130px); }
   .hero .prompt, .hero .role { padding-inline: 0; }
   .hero .role { letter-spacing: .08em; font-size: 11px; }
   .hero-actions { gap: 10px; margin-top: 18px; }
   .hero-actions button { min-height: 44px; }
-  .hero .scrollcue { bottom: 78px; gap: 8px; }
-  .hero .scrollcue .line { height: 24px; }
+  .hero .scrollcue { display: none; }
+  .carousel-hint {
+    display: flex; justify-content: space-between; flex-wrap: wrap; gap: 10px;
+    margin: 12px max(20px, env(safe-area-inset-left)) 18px;
+    font: 12px var(--display); text-transform: uppercase; letter-spacing: .1em;
+  }
+  .carousel-hint span { color: var(--muted); font: 11px var(--body); letter-spacing: .02em; }
   .stage {
-    inset: calc(var(--header-height) + 20px) max(20px, env(safe-area-inset-right)) calc(var(--meta-height, 44px) + 88px + env(safe-area-inset-bottom)) max(20px, env(safe-area-inset-left));
+    position: relative; inset: auto; z-index: 10;
+    width: calc(100% - max(20px, env(safe-area-inset-left)) - max(20px, env(safe-area-inset-right)));
+    display: flex; align-items: stretch; gap: 16px; margin: 0 auto;
+    overflow-x: auto; overflow-y: hidden; scroll-snap-type: x mandatory;
+    scrollbar-width: none; opacity: 1; pointer-events: auto;
+    scroll-margin-top: calc(var(--header-height) + 20px);
   }
+  .stage::-webkit-scrollbar { display: none; }
   .card {
-    left: 50%; top: 50%; width: 100%; height: 100%; max-height: 420px;
-    min-height: 0; aspect-ratio: auto;
-    transform: translate(-50%, -50%) !important;
+    position: relative; left: auto; top: auto; flex: 0 0 100%; width: 100%;
+    height: auto; max-height: none; min-width: 0; min-height: 0; aspect-ratio: auto;
+    transform: none !important; scroll-snap-align: start; transition: none;
   }
-  .card .art { padding: 16px 0; gap: 14px; overflow-y: auto; overscroll-behavior: contain; }
+  .card .art { position: relative; inset: auto; height: 100%; padding: 24px 0; gap: 18px; overflow: visible; }
   .card .top { align-items: flex-start; flex-wrap: wrap; gap: 6px 14px; }
-  .card .title { flex-shrink: 0; margin-top: clamp(0px, 3vh, 28px); font-size: clamp(30px, 7vw, 60px); overflow-wrap: anywhere; }
-  .card .summary { font-size: 13px; flex-shrink: 0; }
+  .card .title { flex-shrink: 0; margin-top: 12px; font-size: clamp(36px, 9vw, 64px); overflow-wrap: anywhere; }
+  .card .summary { font-size: 14px; flex-shrink: 0; }
   .card .bottom { margin-top: auto; padding-top: 6px; flex-shrink: 0; }
   .card .year, .card .badge { font-size: 10px; letter-spacing: .05em; }
   .card .ghost { display: none; }
   .meta {
-    top: auto; bottom: calc(68px + env(safe-area-inset-bottom)); left: 20px; right: 20px;
+    position: relative; top: auto; bottom: auto; left: auto; right: auto;
+    margin: 16px max(20px, env(safe-area-inset-left)) 0;
     max-width: none; transform: none; display: flex; flex-wrap: wrap;
     align-items: center; justify-content: space-between; gap: 8px 12px;
   }
   .meta h2, .meta .cat, .meta .who { display: none; }
+  .meta .open { display: none; }
   .meta .count { float: none; margin: 0; font-size: 13px; }
-  .meta .open { margin: 0; min-height: 44px; display: inline-flex; align-items: center; font-size: 11px; letter-spacing: .1em; }
   .carousel-nav { display: flex; gap: 8px; margin: 0; }
   .carousel-nav button { width: 44px; height: 44px; }
-  .tools { left: max(20px, env(safe-area-inset-left)); bottom: calc(12px + env(safe-area-inset-bottom)); gap: 10px; }
+  .tools { position: relative; left: auto; bottom: auto; margin: 24px max(20px, env(safe-area-inset-left)) 32px; gap: 10px; }
   .tools button { min-height: 44px; padding: 10px 16px; background: var(--bg); }
   .archive-head { gap: 16px; }
   .arch-row h3 { overflow-wrap: anywhere; }
@@ -107,10 +120,5 @@
 @media (max-height: 600px) and (orientation: landscape) {
   .site-header { grid-template-columns: auto 1fr; align-items: center; gap: 24px; padding-block: max(6px, env(safe-area-inset-top)) 6px; }
   .mainnav .rule { display: none; }
-  .stage { top: calc(var(--header-height) + 12px); bottom: calc(112px + env(safe-area-inset-bottom)); }
-  .meta { bottom: calc(60px + env(safe-area-inset-bottom)); }
-  .card .art { gap: 10px; padding-block: 12px; }
-  .card .title { font-size: 32px; }
-  .card .summary { font-size: 12px; line-height: 1.5; }
-  .hero { min-height: 520px; }
+  .hero { min-height: 100svh; padding-block: calc(var(--header-height) + 32px) 56px; }
 }

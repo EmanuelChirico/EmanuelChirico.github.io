@@ -57,7 +57,7 @@
         <article class="story-wrap">
           <header class="story-header">
             <div class="story-eyebrow"><p>${escape(project.sub)}</p><p class="story-index">Project ${String(index + 1).padStart(2, '0')} / ${String(projects.length).padStart(2, '0')}</p></div>
-            <div class="story-heading"><div class="story-identity">${projectLogo(project, 'story-logo')}<h2 class="story-title" id="storyTitle">${escape(project.title)}</h2></div><p class="story-deck">${escape(detail.intro || project.desc)}</p></div>
+            <div class="story-heading"><div class="story-identity"><h2 class="story-title" id="storyTitle">${escape(project.title)}</h2>${projectLogo(project, 'story-logo')}</div><p class="story-deck">${escape(detail.intro || project.desc)}</p></div>
             <dl class="story-facts"><div><dt>Year</dt><dd>${escape(project.year)}</dd></div><div><dt>Context</dt><dd>${escape(detail.context || 'Academic project')}</dd></div><div><dt>Built with</dt><dd>${(project.tags || []).map(escape).join(' / ')}</dd></div></dl>
           </header>
           ${primary ? `<figure class="story-cover"><img src="${safeURL(primary.src)}" alt="${escape(primary.alt)}" width="1200" height="700" fetchpriority="high"><figcaption><span>${escape(primary.caption)}</span><span>Project documentation / ${escape(project.year)}</span></figcaption></figure>` : project.logo ? '' : `<div class="story-monogram" aria-hidden="true"><span>${escape(project.title)}</span><p>${escape(project.badge)}</p></div>`}
@@ -71,7 +71,7 @@
       });
       dialog.querySelectorAll('[data-story-section]').forEach(link => link.addEventListener('click', event => {
         event.preventDefault();
-        dialog.querySelector(`#${link.dataset.storySection}`).scrollIntoView({behavior: matchMedia('(prefers-reduced-motion: reduce)').matches ? 'instant' : 'smooth'});
+        dialog.querySelector(`#${link.dataset.storySection}`).scrollIntoView({behavior: matchMedia('(prefers-reduced-motion: reduce)').matches ? 'auto' : 'smooth'});
       }));
       // Failed images never leave a broken image icon in the story.
       dialog.querySelectorAll('figure img').forEach(img => img.addEventListener('error', () => { img.closest('figure').hidden = true; }));
