@@ -215,7 +215,7 @@
       "detail": {
         "intro": "Teaching a neural network to recognise eight waste categories, and exploring what changes when the training strategy changes.",
         "context": "University · Team project",
-        "overview": "This machine learning project compares ResNet18 and ResNet50 for waste image classification. The eight categories are battery, clothing, glass, metal, organic, paper, plastic, and undifferentiated waste. The project ranked 7th out of 54 university projects, achieving an accuracy of 71% on the test set."
+        "overview": "This machine learning project compares ResNet18 and ResNet50 for waste image classification. The eight categories are battery, clothing, glass, metal, organic, paper, plastic, and undifferentiated waste. The project ranked 7th out of 54 university projects, achieving an accuracy of 71% on the test set.",
         "approach": [
           {
             "title": "Transfer learning",
