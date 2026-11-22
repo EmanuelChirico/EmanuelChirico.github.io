@@ -151,10 +151,26 @@
       box(doorPivot,.83,1.5,.055,-.415,.75,0,wood);box(doorPivot,.08,.045,.045,-.67,.84,.052,metal);
       for(const x of [.51,1.43])box(facade,.06,1.6,.075,x,1,.06,white);box(facade,.98,.06,.075,.97,1.8,.06,white);
       const servo=new Group();facade.add(servo);servo.position.set(1.21,1.61,-.15);box(servo,.29,.23,.15,0,0,0,blue);cylinder(servo,.035,.035,.18,0,.14,0,white);
-      const screenTexture=texture((ctx,w,h)=>{ctx.fillStyle='#07191d';ctx.fillRect(0,0,w,h);ctx.fillStyle='#8de8d3';ctx.font='bold 38px monospace';ctx.textAlign='center';ctx.fillText('L U M A',w/2,95);ctx.font='23px monospace';ctx.fillText('WELCOME HOME',w/2,160);ctx.fillText('ENTER PIN  _ _ _ _',w/2,205);},512,256);
-      box(facade,.28,.33,.045,-.15,1.97,.08,dark);const screen=mesh(new PlaneGeometry(.23,.24),material(0xffffff,{map:screenTexture,emissive:0x58cdb9,emissiveMap:screenTexture,emissiveIntensity:.28}),facade,-.15,1.97,.107);
-      const keypad=texture((ctx,w,h)=>{ctx.fillStyle='#11181d';ctx.fillRect(0,0,w,h);const labels=['1','2','3','A','4','5','6','B','7','8','9','C','*','0','#','D'];ctx.textAlign='center';ctx.textBaseline='middle';ctx.font='bold 50px sans-serif';for(let y=0;y<4;y++)for(let x=0;x<4;x++){ctx.fillStyle=x===3?'#a54538':'#315777';ctx.fillRect(18+x*119,18+y*119,104,104);ctx.strokeStyle='#b0bdc1';ctx.strokeRect(18+x*119,18+y*119,104,104);ctx.fillStyle='#edf5f3';ctx.fillText(labels[y*4+x],70+x*119,70+y*119);}});
-      box(facade,.54,.83,.045,-1.14,1.96,.085,black);mesh(new PlaneGeometry(.49,.76),material(0xffffff,{map:keypad}),facade,-1.14,1.96,.111);
+      // Keep each printed face at the same aspect ratio as its canvas texture.
+      const screenTexture=texture((ctx,w,h)=>{ctx.fillStyle='#07191d';ctx.fillRect(0,0,w,h);ctx.fillStyle='#8de8d3';ctx.textAlign='center';ctx.font='bold 28px monospace';ctx.fillText('LUMA',w/2,43);ctx.font='15px monospace';ctx.fillText('ENTER PIN',w/2,76);ctx.font='18px monospace';ctx.fillText('_ _ _ _',w/2,106);},256,128);
+      box(facade,.34,.26,.035,-.15,1.97,.08,dark);
+      mesh(new PlaneGeometry(.28,.14),material(0xffffff,{map:screenTexture,emissive:0x58cdb9,emissiveMap:screenTexture,emissiveIntensity:.28}),facade,-.15,1.97,.102);
+      const keypadWidth=.60,keypadHeight=.70;
+      const keypad=texture((ctx,w,h)=>{
+        ctx.fillStyle='#11151a';ctx.fillRect(0,0,w,h);
+        ctx.strokeStyle='#a5a7a8';ctx.lineWidth=5;ctx.beginPath();ctx.roundRect(12,12,w-24,h-24,25);ctx.stroke();
+        const labels=['1','2','3','A','4','5','6','B','7','8','9','C','*','0','#','D'];
+        const size=104,gap=16,grid=size*4+gap*3,startX=(w-grid)/2,startY=(h-grid)/2;
+        ctx.textAlign='center';ctx.textBaseline='middle';ctx.font='500 53px Arial, sans-serif';
+        for(let row=0;row<4;row++)for(let col=0;col<4;col++){
+          const x=startX+col*(size+gap),y=startY+row*(size+gap);
+          ctx.fillStyle=col===3?'#b03936':'#285b9c';ctx.beginPath();ctx.roundRect(x,y,size,size,10);ctx.fill();
+          ctx.strokeStyle='#b3bbc8';ctx.lineWidth=3;ctx.stroke();ctx.fillStyle='#ffffff';
+          ctx.fillText(labels[row*4+col],x+size/2,y+size/2+2);
+        }
+      },600,700);
+      box(facade,keypadWidth,keypadHeight,.035,-1.14,1.96,.085,black);
+      mesh(new PlaneGeometry(keypadWidth*.96,keypadHeight*.96),material(0xffffff,{map:keypad}),facade,-1.14,1.96,.105);
       box(facade,.23,.47,.035,-.12,.76,.075,blue);for(const y of [.64,.89]){const can=cylinder(facade,.095,.095,.075,-.12,y,.15,metal);can.rotation.x=Math.PI/2;const face=cylinder(facade,.069,.069,.078,-.12,y,.17,dark);face.rotation.x=Math.PI/2;for(let k=0;k<6;k++){const ring=mesh(new TorusGeometry(.015+k*.008,.002,3,24),metal,facade,-.12,y,.212);ring.castShadow=false;}}
       sphere(facade,.025,.66,1.93,.09,material(0xffd65c,{emissive:0xffce3e,emissiveIntensity:.8}));
       // Side window, motor and fabric awning match the visible side of the real model.
@@ -204,12 +220,12 @@
         const fittedRadius=radius*Math.max(1,.98/camera.aspect)*(1+explode*.13+lift*.04);
         camera.position.set(focusX+Math.sin(yaw)*Math.cos(pitch)*fittedRadius,focusY+Math.sin(pitch)*fittedRadius,focusZ+Math.cos(yaw)*Math.cos(pitch)*fittedRadius);camera.lookAt(focusX,focusY,focusZ);
         const component=[null,[-.12,.85,1.88,.8],[-.8,1.98,1.85,1.8],[1.0,1.12,1.83,2.0],[2.3,1.7,.1,2.5],[1.0,.68,.15,1.15],[-1.3,.64,-.9,1.45],[0,.65,-.65,2.3]][state.chapter];
-        highlight.visible=!!component;if(component){highlight.position.set(component[0]+(state.chapter===4?explode*1.2:0),component[1]+(state.chapter>=5?explode*.5:0),component[2]+(state.chapter<=3?explode*.95:0));highlight.scale.setScalar(component[3]);highlight.quaternion.copy(camera.quaternion);}
+        highlight.visible=!!component&&state.chapter!==2;if(component){highlight.position.set(component[0]+(state.chapter===4?explode*1.2:0),component[1]+(state.chapter>=5?explode*.5:0),component[2]+(state.chapter<=3?explode*.95:0));highlight.scale.setScalar(component[3]);highlight.quaternion.copy(camera.quaternion);}
         renderer.render(scene,camera);
         anchors[0].set(state.chapter===1?-.12:state.chapter===3?1.0:-.8,state.chapter===1?.85:state.chapter===3?1.2:1.98,1.88+explode*.95);
         anchors[1].set(2.18+explode*1.2,2.4,.3);anchors[2].set(state.chapter===5?1.0:state.chapter===6?-1.3:0,.75+explode*.5,state.chapter===5?.15:state.chapter===6?-.9:-.65);
         const focus=chapters[state.chapter].focus;
-        spotElements.forEach((el,i)=>{project.copy(anchors[i]).project(camera);el.style.left=`${(project.x*.5+.5)*width}px`;el.style.top=`${(-project.y*.5+.5)*height-42}px`;el.hidden=(focus>0&&focus!==i+1)||(i===2&&!state.roof&&!state.xray&&explode<.2)||project.z>1||Math.abs(project.x)>.92||Math.abs(project.y)>.9;});
+        spotElements.forEach((el,i)=>{project.copy(anchors[i]).project(camera);el.style.left=`${(project.x*.5+.5)*width}px`;el.style.top=`${(-project.y*.5+.5)*height-(state.chapter===2?100:42)}px`;el.hidden=(focus>0&&focus!==i+1)||(i===2&&!state.roof&&!state.xray&&explode<.2)||project.z>1||Math.abs(project.x)>.92||Math.abs(project.y)>.9;});
         spotElements[0].querySelector('b').textContent=state.chapter===1?'HC-SR04':state.chapter===2?'Keypad + OLED':state.chapter===3?'Door servo':'Entrance';
         spotElements[2].querySelector('b').textContent=state.chapter===5?'DHT22 + TSL2561':state.chapter===6?'Fan + relay':'ESP32 × 2';
         const changing=Math.abs(targetYaw-yaw)+Math.abs(targetPitch-pitch)+Math.abs(targetRadius-radius)+Math.abs(targetX-focusX)+Math.abs(targetY-focusY)+Math.abs(targetZ-focusZ)+Math.abs(state.explode-explode)+Math.abs((state.roof?1:0)-lift)+Math.abs((state.door?-1.35:0)-doorAngle)+Math.abs((state.curtain ? .84 : 0)-curtainOpen)>.002;
