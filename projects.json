@@ -1,17 +1,239 @@
 {
   "_source": {
     "profile": "https://github.com/EmanuelChirico",
-    "verified_on": "2026-11-07",
-    "scope": "Public project repositories owned by EmanuelChirico and public team projects pinned on the GitHub profile. The profile repository itself is excluded.",
-    "pinned_repositories": [
+    "verified_on": "2026-11-22",
+    "scope": "Public project repositories owned by EmanuelChirico and public team projects selected for this portfolio. The profile repository itself is excluded.",
+    "featured_order": [
+      "pondulo",
+      "luma",
+      "aequitas",
+      "safestep-xr",
+      "waste-sorting"
+    ],
+    "featured_repositories": [
+      "https://github.com/EmanuelChirico/Pondulo",
       "https://github.com/fra343/Luma-IoT-Project",
       "https://github.com/EmanuelChirico/Aequitas",
-      "https://github.com/Luigii11/VibeFlow",
       "https://github.com/matteodonofrio003/SafeStep-XR",
       "https://github.com/Luigii11/Waste-Sorting-Neural-Network"
     ]
   },
   "projects": [
+    {
+      "title": "PONDULO",
+      "sub": "Embedded / Touchless HMI",
+      "badge": "STM32 / ChibiOS",
+      "year": "2026",
+      "desc": "NISC 2026 winning team project: a touchless weighing prototype with ToF hand tracking, three STM32 controllers, a graphical interface and audio feedback.",
+      "tags": [
+        "Embedded C",
+        "STM32",
+        "ChibiOS",
+        "ToF"
+      ],
+      "url": "https://github.com/EmanuelChirico/Pondulo",
+      "featured": true,
+      "id": "pondulo",
+      "logo": {
+        "src": "assets/projects/pondulo/pondulo_icon.png",
+        "width": 256,
+        "height": 256
+      },
+      "detail": {
+        "intro": "Move your hand. Make a selection. Weigh a product. A physical interface that brings gestures, graphics and sensing together without touching a screen.",
+        "context": "NISC 2026 · Team 6",
+        "recognition": "One of three winning projects · NeaPolis Innovation Summer Campus 2026",
+        "metrics": [
+          {
+            "value": "3",
+            "label": "STM32 controllers"
+          },
+          {
+            "value": "8 × 8",
+            "label": "ToF sensing zones"
+          },
+          {
+            "value": "1.5 s",
+            "label": "Dwell to select"
+          },
+          {
+            "value": "320 × 240",
+            "label": "Graphical display"
+          }
+        ],
+        "overview": "PONDULO is a working competition prototype developed by Team 6 at the NeaPolis Innovation Summer Campus, associated with STMicroelectronics. It pairs a contact-free graphical interface with a physical weighing platform. A multi-zone Time-of-Flight sensor follows the operator’s hand, while three NUCLEO-G474RE boards divide sensing, interface rendering and weight acquisition.",
+        "motivation": "At a food counter, interacting with a shared keypad can interrupt the task of handling products. PONDULO explores an alternative: move a cursor in the air, pause to select an item and read its weight on the same device. The objective was to demonstrate an end-to-end interaction on real hardware, from hand movement to an on-screen cart and receipt.",
+        "workflow": [
+          {
+            "title": "Find a product",
+            "text": "Move a hand in front of the ToF sensor to navigate the catalogue. Hold the cursor over a target for 1.5 seconds to select it."
+          },
+          {
+            "title": "Weigh it",
+            "text": "Place the product on the platform. The scale node acquires and filters the load-cell signal; the interface receives the weight through an analog link."
+          },
+          {
+            "title": "Set the quantity",
+            "text": "Use the touchless quantity keypad, with a PUSH-only entry to avoid accidental activation immediately after product selection."
+          },
+          {
+            "title": "Review the cart",
+            "text": "Add the item to a cart and show an on-screen receipt. Context-dependent audio cues confirm key steps."
+          }
+        ],
+        "video": {
+          "src": "assets/projects/pondulo/demo_pondulo.mp4",
+          "poster": "assets/projects/pondulo/hero_live.webp",
+          "caption": "The original team demonstration: hand navigation, live weighing and the on-screen retail workflow. Audio and labels are from the campus prototype."
+        },
+        "architecture": {
+          "intro": "The prototype separates three workloads with different timing needs. Each board owns a subsystem; the display node brings their outputs together for the operator. Select a node to inspect its responsibilities and connections.",
+          "nodes": [
+            {
+              "label": "Sensor node",
+              "name": "From depth to pointer",
+              "hardware": "STM32 A · VL53L7CX / X-NUCLEO-53L7A1",
+              "text": "A data-ready interrupt and semaphore signal new ranging frames. The firmware maps the closest zone and admitted neighbours to a distance-weighted centroid, then smooths the cursor with fixed-point arithmetic. A separate pointer thread decouples cursor updates from sensor acquisition. A motion state machine identifies directional and depth gestures.",
+              "link": "Output: ASCII $XY and $GS messages over USART3 at 921600 baud to the display node.",
+              "specs": [
+                "8 × 8 at 15 Hz or 4 × 4 at 60 Hz",
+                "Separate pointer update loop configured around 100 Hz",
+                "I²C sensor acquisition + UART output"
+              ]
+            },
+            {
+              "label": "Display node",
+              "name": "Where inputs become interaction",
+              "hardware": "STM32 B · ILI9341 / X-NUCLEO-GFX01M2",
+              "text": "The interface uses uGFX on a 320 × 240 display. Pointer coordinates are retained as the latest state, while discrete gestures enter a mailbox. A graphics mutex coordinates rendering, with incremental redraws and cursor background restoration. The display also reads the analog weight and triggers the serial audio player.",
+              "link": "Inputs: UART pointer/gestures + ADC weight. Outputs: SPI graphics + UART5 audio commands at 9600 baud.",
+              "specs": [
+                "UI tick configured at 20 ms",
+                "1500 ms dwell selection",
+                "Retail flow + sample clinical navigation"
+              ]
+            },
+            {
+              "label": "Scale node",
+              "name": "From load cell to live weight",
+              "hardware": "STM32 C · HX711 / 74HC595 display",
+              "text": "The scale node reads the load cell through the HX711, applies a 16-sample moving average and handles startup tare, calibration and live/hold behaviour. It drives an independent eight-digit display, so the weighing subsystem has local feedback as well as an output to the graphical interface.",
+              "link": "Output: 12-bit DAC on PA4 to the display node’s ADC2, with common ground. The exported range is clamped to 0–1000 g.",
+              "specs": [
+                "HX711 load-cell acquisition",
+                "16-sample moving average",
+                "Local digits + analog weight output"
+              ]
+            }
+          ],
+          "note": "The rates above are firmware configurations, not measured end-to-end latency. The analog export range does not establish weighing accuracy."
+        },
+        "approach": [
+          {
+            "title": "Smooth motion, separate timing",
+            "text": "Depth acquisition and cursor updates run independently. Fixed-point centroid calculation and smoothing make the pointer usable between sensor frames without implying new depth measurements at every pointer tick."
+          },
+          {
+            "title": "State and events travel differently",
+            "text": "The display keeps only the latest pointer coordinates, while gestures use discrete mailbox events. This avoids treating a stream of positions and one-off actions as the same kind of input."
+          },
+          {
+            "title": "Redraw only what changes",
+            "text": "Incremental updates and saved cursor backgrounds limit the area repainted over SPI. A shared graphics mutex coordinates screen transitions and cursor drawing."
+          },
+          {
+            "title": "A simple analog weight link",
+            "text": "The scale exports weight as a DAC voltage and the display samples it with an ADC. This avoids packet decoding for that signal, but requires a common ground, endpoint calibration and a way to address the current lack of disconnect detection."
+          },
+          {
+            "title": "Feedback beyond the screen",
+            "text": "The local digit display gives direct weighing feedback. A YX5300 MP3 module provides audio cues for presence, selection and receipt events."
+          }
+        ],
+        "validation": {
+          "intro": "The project reached a physical campus demonstration and was one of the three winning projects at NISC 2026. The repository also documents native tests and the boundaries of what they establish.",
+          "items": [
+            {
+              "title": "Implemented in the primary prototype",
+              "text": "ToF cursor and gesture input, dwell selection, graphical retail navigation, physical weighing, local digits, an on-screen cart/receipt and audio command handling."
+            },
+            {
+              "title": "Software verification",
+              "text": "Eight host-test executables cover cursor smoothing, gesture codecs and parsing, dwell/focus behaviour, audio events, JSON/cart models, storage fixtures and price-message validation. Mocks isolate software behaviour; they do not validate hardware timing or metrology."
+            },
+            {
+              "title": "A separate connectivity experiment",
+              "text": "The ESP8266 web editor stores prices in LittleFS and sends updates to a standalone STM32 receiver. This receiver is not integrated into the main display firmware."
+            },
+            {
+              "title": "Demonstration boundaries",
+              "text": "Clinical screens use sample patient records. Receipts remain on screen, and storage uses fixtures rather than a physical SD driver. No certified weighing accuracy, medical use or hygiene performance is claimed."
+            }
+          ]
+        },
+        "outcome": "PONDULO brought hand tracking, a graphical workflow and real weighing into one physical demonstration. The engineering takeaway is the connection between firmware and an interaction people can immediately understand: an input is sensed, communicated, interpreted and reflected on a real device.",
+        "nextSteps": [
+          {
+            "title": "Validate on hardware",
+            "text": "Measure weight error and settling, check serial reliability under load, and inspect thread scheduling and stack usage. Consolidate shared ADC access under one owner."
+          },
+          {
+            "title": "Complete the price bridge",
+            "text": "Integrate the standalone receiver with explicit price types and cart-update rules, then add acknowledgements, integrity checks and boot resynchronisation."
+          },
+          {
+            "title": "Make the build repeatable",
+            "text": "Recover and pin the original ChibiOS/uGFX and toolchain revisions before claiming a reproducible embedded release. The repository preparation did not verify a full firmware rebuild."
+          }
+        ],
+        "credits": "Developed by Team 6: Alessia Giamundo, Emanuel Chirico, Federico Longobardi, Gianluigi Esposito, Lucia Cerullo, Matteo Saccone and Vincenzo D’Ambrosio. Team achievement at NISC 2026; repository maintained by Emanuel Chirico. Prototype photographs and demonstration video from the team presentation on Vincenzo D’Ambrosio’s PONDULO site.",
+        "resources": [
+          {
+            "label": "Architecture and protocols",
+            "url": "https://github.com/EmanuelChirico/Pondulo/blob/main/docs/ARCHITECTURE.md"
+          },
+          {
+            "label": "Hardware and wiring",
+            "url": "https://github.com/EmanuelChirico/Pondulo/blob/main/docs/HARDWARE.md"
+          },
+          {
+            "label": "Validation and test coverage",
+            "url": "https://github.com/EmanuelChirico/Pondulo/blob/main/docs/VALIDATION.md"
+          },
+          {
+            "label": "Interactive 3D presentation by Vincenzo",
+            "url": "https://pondulo.vincenzonet.it/"
+          }
+        ],
+        "images": [
+          {
+            "src": "assets/projects/pondulo/hero_live.webp",
+            "alt": "PONDULO in use at NISC 2026: a hand above the ToF sensor and a bottle on the weighing platform",
+            "caption": "Hands in the air, a product on the scale: the PONDULO team demonstration at NISC 2026."
+          },
+          {
+            "src": "assets/projects/pondulo/internal_head.webp",
+            "alt": "Rear of the PONDULO head showing the STM32 boards, wiring and supporting electronics",
+            "caption": "Inside the head: separate controllers and the electronics behind the interface."
+          },
+          {
+            "src": "assets/projects/pondulo/internal_base.webp",
+            "alt": "Underside of PONDULO showing the load-cell assembly and electronics in the base",
+            "caption": "Inside the base: the physical weighing assembly and supporting electronics."
+          },
+          {
+            "src": "assets/projects/pondulo/campus_side.webp",
+            "alt": "Side view of the assembled PONDULO prototype on a campus laboratory bench",
+            "caption": "The assembled prototype on the laboratory bench."
+          },
+          {
+            "src": "assets/projects/pondulo/prototype.jpg",
+            "alt": "Front view of the PONDULO prototype with its red enclosure and weighing platform",
+            "caption": "The physical prototype documented in the project repository."
+          }
+        ]
+      }
+    },
     {
       "title": "LUMA",
       "sub": "Embedded / Smart Home",
@@ -128,7 +350,7 @@
         "Design Patterns"
       ],
       "url": "https://github.com/Luigii11/VibeFlow",
-      "featured": true,
+      "featured": false,
       "id": "vibeflow",
       "detail": {
         "intro": "A desktop music player used to explore how software architecture supports a changing, interactive application.",

@@ -34,20 +34,36 @@
         sync();
       }
     }
+    const pointList = items => `<ul class="story-points">${items.map(point => `<li><strong>${escape(point.title)}</strong><span>${escape(point.text)}</span></li>`).join('')}</ul>`;
     function render(project) {
       const detail = project.detail || {};
       const index = projects.indexOf(project);
       const next = projects[(index + 1) % projects.length];
       const images = (detail.images || []).filter(image => safeURL(image.src));
       const primary = images[0];
-      const points = detail.approach?.length ? `<ul class="story-points">${detail.approach.map(point => `<li><strong>${escape(point.title)}</strong><span>${escape(point.text)}</span></li>`).join('')}</ul>` : '';
+      const points = detail.approach?.length ? pointList(detail.approach) : '';
       const gallery = images.length > 1 ? `<div class="story-gallery">${images.slice(1).map(image => `<figure><img src="${safeURL(image.src)}" alt="${escape(image.alt)}" loading="lazy" width="800" height="600"><figcaption>${escape(image.caption)}</figcaption></figure>`).join('')}</div>` : '';
-      const sections = [
-        {id:'story-overview', label:'Overview', html:section('story-overview','01','The project',paragraph(detail.overview || project.desc))},
-        ...(points ? [{id:'story-engineering', label:'Engineering', html:section('story-engineering','02','Engineering decisions',points)}] : []),
-        ...(gallery ? [{id:'story-gallery', label:'In pictures', html:section('story-gallery','03','A closer look',gallery)}] : []),
-        ...(detail.outcome ? [{id:'story-outcome', label:'Outcome', html:section('story-outcome',gallery ? '04' : points ? '03' : '02','Outcome & next steps',paragraph(detail.outcome))}] : [])
-      ];
+      const architecture = detail.architecture?.nodes?.length ? `
+        ${paragraph(detail.architecture.intro)}
+        <div class="story-nodes" role="group" aria-label="Explore the three STM32 nodes">
+          ${detail.architecture.nodes.map((node, i) => `<button type="button" class="story-node" data-story-node="${i}" aria-pressed="${i === 0}" aria-controls="story-node-panel-${i}"><span>STM32 ${String.fromCharCode(65 + i)}</span><strong>${escape(node.label)}</strong><small>${escape(node.name)}</small></button>`).join('')}
+        </div>
+        ${detail.architecture.nodes.map((node, i) => `<div class="story-node-panel" id="story-node-panel-${i}" ${i ? 'hidden' : ''} role="region" aria-label="${escape(node.label)} details"><p class="story-hardware">${escape(node.hardware)}</p><h4>${escape(node.name)}</h4>${paragraph(node.text)}<ul class="story-specs">${node.specs.map(spec => `<li>${escape(spec)}</li>`).join('')}</ul><p class="story-connection">${escape(node.link)}</p></div>`).join('')}
+        <p class="story-note">${escape(detail.architecture.note)}</p>` : '';
+      const video = detail.video && safeURL(detail.video.src) ? `<figure class="story-demo"><video controls playsinline preload="none" ${safeURL(detail.video.poster) ? `poster="${safeURL(detail.video.poster)}"` : ''} aria-label="${escape(project.title)} prototype demonstration"><source src="${safeURL(detail.video.src)}" type="video/mp4">Your browser does not support embedded video. <a href="${safeURL(detail.video.src)}">Open the demonstration video</a>.</video><figcaption>${escape(detail.video.caption)}</figcaption></figure>` : '';
+      const resources = detail.resources?.filter(item => safeURL(item.url)) || [];
+      const sections = [];
+      const addSection = (id, label, heading, content) => sections.push({id, label, html: section(id, String(sections.length + 1).padStart(2, '0'), heading, content)});
+      addSection('story-overview', 'Overview', 'The project', paragraph(detail.overview || project.desc) + (detail.motivation ? paragraph(detail.motivation) : ''));
+      if (detail.workflow?.length) addSection('story-experience', 'In use', 'From a gesture to a receipt', `<ol class="story-workflow">${detail.workflow.map(step => `<li><h4>${escape(step.title)}</h4>${paragraph(step.text)}</li>`).join('')}</ol>` + video);
+      else if (video) addSection('story-demo', 'Demo', 'The prototype in action', video);
+      if (architecture) addSection('story-architecture', 'Architecture', 'Three boards. One interaction.', architecture);
+      if (points) addSection('story-engineering', 'Engineering', 'Engineering decisions', points);
+      if (gallery) addSection('story-gallery', 'In pictures', architecture ? 'Inside the prototype' : 'A closer look', gallery);
+      if (detail.validation) addSection('story-validation', 'Validation', 'What the prototype demonstrates', paragraph(detail.validation.intro) + pointList(detail.validation.items));
+      if (detail.outcome) addSection('story-outcome', 'Outcome', detail.nextSteps ? 'Results & what comes next' : 'Outcome & next steps', paragraph(detail.outcome) + (detail.nextSteps?.length ? pointList(detail.nextSteps) : ''));
+      if (resources.length) addSection('story-resources', 'Sources & team', 'Explore the project further', `<ul class="story-resources">${resources.map(item => `<li><a href="${safeURL(item.url)}" target="_blank" rel="noopener noreferrer">${escape(item.label)}</a></li>`).join('')}</ul>`);
+      dialog.classList.toggle('story-expanded', !!detail.architecture);
       dialog.innerHTML = `
         <header class="story-bar">
           <button class="story-back" data-story-close autofocus>← Back to projects</button>
@@ -56,14 +72,20 @@
         </header>
         <article class="story-wrap">
           <header class="story-header">
+            ${detail.recognition ? `<p class="story-recognition">${escape(detail.recognition)}</p>` : ''}
             <div class="story-eyebrow"><p>${escape(project.sub)}</p><p class="story-index">Project ${String(index + 1).padStart(2, '0')} / ${String(projects.length).padStart(2, '0')}</p></div>
             <div class="story-heading"><div class="story-identity"><h2 class="story-title" id="storyTitle">${escape(project.title)}</h2>${projectLogo(project, 'story-logo')}</div><p class="story-deck">${escape(detail.intro || project.desc)}</p></div>
             <dl class="story-facts"><div><dt>Year</dt><dd>${escape(project.year)}</dd></div><div><dt>Context</dt><dd>${escape(detail.context || 'Academic project')}</dd></div><div><dt>Built with</dt><dd>${(project.tags || []).map(escape).join(' / ')}</dd></div></dl>
+            ${detail.metrics?.length ? `<dl class="story-metrics">${detail.metrics.map(metric => `<div><dt>${escape(metric.label)}</dt><dd>${escape(metric.value)}</dd></div>`).join('')}</dl>` : ''}
           </header>
           ${primary ? `<figure class="story-cover"><img src="${safeURL(primary.src)}" alt="${escape(primary.alt)}" width="1200" height="700" fetchpriority="high"><figcaption><span>${escape(primary.caption)}</span><span>Project documentation / ${escape(project.year)}</span></figcaption></figure>` : project.logo ? '' : `<div class="story-monogram" aria-hidden="true"><span>${escape(project.title)}</span><p>${escape(project.badge)}</p></div>`}
           <div class="story-body"><nav class="story-toc" aria-label="On this project"><p>inside the project</p>${sections.map(item => `<a href="#${item.id}" data-story-section="${item.id}">${item.label}</a>`).join('')}</nav><div>${sections.map(item => item.html).join('')}<p class="story-source">${escape(detail.credits || 'Project summary based on the linked repository.')} ${safeURL(project.url) ? `<a href="${safeURL(project.url)}" target="_blank" rel="noopener noreferrer">Explore the repository ↗</a>` : ''}</p></div></div>
           <footer class="story-footer">${codeLink(project)}<a class="story-next" href="${window.projectHref(next)}"><span>Next project ↗</span><strong>${escape(next.title)}</strong></a></footer>
         </article>`;
+      dialog.querySelectorAll('[data-story-node]').forEach(button => button.addEventListener('click', () => {
+        dialog.querySelectorAll('[data-story-node]').forEach(item => item.setAttribute('aria-pressed', String(item === button)));
+        dialog.querySelectorAll('.story-node-panel').forEach((panel, i) => { panel.hidden = i !== Number(button.dataset.storyNode); });
+      }));
       dialog.querySelector('[data-story-close]').addEventListener('click', closeStory);
       dialog.querySelector('.story-theme').addEventListener('click', () => {
         document.getElementById('lightBtn').click();
@@ -83,7 +105,7 @@
       let project;
       try { project = match && projects.find(item => item.id === decodeURIComponent(match[1])); } catch { /* Invalid URL encoding. */ }
       if (!match) {
-        if (dialog.open) { dialog.close(); lastFocus?.focus({preventScroll:true}); }
+        if (dialog.open) { dialog.querySelectorAll('video').forEach(video => video.pause()); dialog.close(); lastFocus?.focus({preventScroll:true}); }
         document.title = title;
         return;
       }
