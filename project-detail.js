@@ -23,6 +23,7 @@
     dialog.setAttribute('aria-labelledby', 'storyTitle');
     document.body.appendChild(dialog);
     let lastFocus = null;
+    let disposeHero = () => {};
     const title = document.title;
     const section = (id, number, heading, content) => `<section class="story-section" id="${id}"><h3><small>${number}</small>${heading}</h3>${content}</section>`;
     const paragraph = text => `<p>${escape(text)}</p>`;
@@ -36,13 +37,15 @@
     }
     const pointList = items => `<ul class="story-points">${items.map(point => `<li><strong>${escape(point.title)}</strong><span>${escape(point.text)}</span></li>`).join('')}</ul>`;
     function render(project) {
+      disposeHero(); disposeHero = () => {};
+      const isLuma = project.id === 'luma' && window.LumaHero;
       const detail = project.detail || {};
       const index = projects.indexOf(project);
       const next = projects[(index + 1) % projects.length];
       const images = (detail.images || []).filter(image => safeURL(image.src));
       const primary = images[0];
       const points = detail.approach?.length ? pointList(detail.approach) : '';
-      const gallery = images.length > 1 ? `<div class="story-gallery">${images.slice(1).map(image => `<figure><img src="${safeURL(image.src)}" alt="${escape(image.alt)}" loading="lazy" width="800" height="600"><figcaption>${escape(image.caption)}</figcaption></figure>`).join('')}</div>` : '';
+      const gallery = images.length > 1 ? `<div class="story-gallery">${(isLuma ? images : images.slice(1)).map(image => `<figure><img src="${safeURL(image.src)}" alt="${escape(image.alt)}" loading="lazy" width="800" height="600"><figcaption>${escape(image.caption)}</figcaption></figure>`).join('')}</div>` : '';
       const architecture = detail.architecture?.nodes?.length ? `
         ${paragraph(detail.architecture.intro)}
         <div class="story-nodes" role="group" aria-label="Explore the three STM32 nodes">
@@ -64,6 +67,7 @@
       if (detail.outcome) addSection('story-outcome', 'Outcome', detail.nextSteps ? 'Results & what comes next' : 'Outcome & next steps', paragraph(detail.outcome) + (detail.nextSteps?.length ? pointList(detail.nextSteps) : ''));
       if (resources.length) addSection('story-resources', 'Sources & team', 'Explore the project further', `<ul class="story-resources">${resources.map(item => `<li><a href="${safeURL(item.url)}" target="_blank" rel="noopener noreferrer">${escape(item.label)}</a></li>`).join('')}</ul>`);
       dialog.classList.toggle('story-expanded', !!detail.architecture);
+      dialog.classList.toggle('story-luma', !!isLuma);
       dialog.innerHTML = `
         <header class="story-bar">
           <button class="story-back" data-story-close autofocus>← Back to projects</button>
@@ -71,14 +75,14 @@
           <div class="story-bar-actions"><button class="story-theme" aria-label="Toggle color theme">${document.body.classList.contains('light') ? 'Dark' : 'Light'}</button>${codeLink(project)}</div>
         </header>
         <article class="story-wrap">
-          <header class="story-header">
+          ${isLuma ? window.LumaHero.markup() : `<header class="story-header">
             ${detail.recognition ? `<p class="story-recognition">${escape(detail.recognition)}</p>` : ''}
             <div class="story-eyebrow"><p>${escape(project.sub)}</p><p class="story-index">Project ${String(index + 1).padStart(2, '0')} / ${String(projects.length).padStart(2, '0')}</p></div>
             <div class="story-heading"><div class="story-identity"><h2 class="story-title" id="storyTitle">${escape(project.title)}</h2>${projectLogo(project, 'story-logo')}</div><p class="story-deck">${escape(detail.intro || project.desc)}</p></div>
             <dl class="story-facts"><div><dt>Year</dt><dd>${escape(project.year)}</dd></div><div><dt>Context</dt><dd>${escape(detail.context || 'Academic project')}</dd></div><div><dt>Built with</dt><dd>${(project.tags || []).map(escape).join(' / ')}</dd></div></dl>
             ${detail.metrics?.length ? `<dl class="story-metrics">${detail.metrics.map(metric => `<div><dt>${escape(metric.label)}</dt><dd>${escape(metric.value)}</dd></div>`).join('')}</dl>` : ''}
           </header>
-          ${primary ? `<figure class="story-cover"><img src="${safeURL(primary.src)}" alt="${escape(primary.alt)}" width="1200" height="700" fetchpriority="high"><figcaption><span>${escape(primary.caption)}</span><span>Project documentation / ${escape(project.year)}</span></figcaption></figure>` : project.logo ? '' : `<div class="story-monogram" aria-hidden="true"><span>${escape(project.title)}</span><p>${escape(project.badge)}</p></div>`}
+          ${primary ? `<figure class="story-cover"><img src="${safeURL(primary.src)}" alt="${escape(primary.alt)}" width="1200" height="700" fetchpriority="high"><figcaption><span>${escape(primary.caption)}</span><span>Project documentation / ${escape(project.year)}</span></figcaption></figure>` : project.logo ? '' : `<div class="story-monogram" aria-hidden="true"><span>${escape(project.title)}</span><p>${escape(project.badge)}</p></div>`}`}
           <div class="story-body"><nav class="story-toc" aria-label="On this project"><p>inside the project</p>${sections.map(item => `<a href="#${item.id}" data-story-section="${item.id}">${item.label}</a>`).join('')}</nav><div>${sections.map(item => item.html).join('')}<p class="story-source">${escape(detail.credits || 'Project summary based on the linked repository.')} ${safeURL(project.url) ? `<a href="${safeURL(project.url)}" target="_blank" rel="noopener noreferrer">Explore the repository ↗</a>` : ''}</p></div></div>
           <footer class="story-footer">${codeLink(project)}<a class="story-next" href="${window.projectHref(next)}"><span>Next project ↗</span><strong>${escape(next.title)}</strong></a></footer>
         </article>`;
@@ -97,6 +101,7 @@
       }));
       // Failed images never leave a broken image icon in the story.
       dialog.querySelectorAll('figure img').forEach(img => img.addEventListener('error', () => { img.closest('figure').hidden = true; }));
+      if (isLuma) disposeHero = window.LumaHero.mount(dialog.querySelector('.luma-hero'));
       dialog.scrollTop = 0;
       document.title = `${project.title} | Emanuel Chirico`;
     }
@@ -105,7 +110,7 @@
       let project;
       try { project = match && projects.find(item => item.id === decodeURIComponent(match[1])); } catch { /* Invalid URL encoding. */ }
       if (!match) {
-        if (dialog.open) { dialog.querySelectorAll('video').forEach(video => video.pause()); dialog.close(); lastFocus?.focus({preventScroll:true}); }
+        if (dialog.open) { disposeHero(); disposeHero = () => {}; dialog.querySelectorAll('video').forEach(video => video.pause()); dialog.close(); lastFocus?.focus({preventScroll:true}); }
         document.title = title;
         return;
       }
