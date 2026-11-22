@@ -252,27 +252,19 @@
       "detail": {
         "intro": "A connected home, built at scale. Two ESP32 nodes bring sensing, access control and everyday automation into one physical prototype.",
         "context": "University · Team project",
-        "overview": "LUMA connects the physical and digital sides of a miniature smart home. One ESP32 manages the entrance, while a second controls the curtain and ventilation. Both run independent MicroPython applications and exchange commands and telemetry through MQTT, with Node-RED providing the dashboard in the original prototype.",
+        "overview": "LUMA is a physical smart-home demonstrator built around a wooden scale model. The project connects everyday interactions—approaching the entrance, entering a PIN, moving a curtain and switching ventilation—to sensors, embedded controllers and visible mechanical actions. Two ESP32 boards run independent MicroPython applications and exchange commands and readings through MQTT.",
         "approach": [
           {
-            "title": "Two independent nodes",
-            "text": "Separate door and curtain applications keep each board focused on its own sensors and actuators. Device wrappers, control logic and communication modules have distinct responsibilities."
+            "title": "Entrance interaction",
+            "text": "The entrance node brings together ultrasonic presence detection, a matrix keypad, a horizontal OLED and a door servo. It provides local feedback and accepts remote door commands through MQTT."
           },
           {
-            "title": "Control through MQTT",
-            "text": "Commands and telemetry pass through a broker, connecting the physical model to a dashboard without combining both board applications into one firmware."
-          },
-          {
-            "title": "Thresholds with hysteresis",
-            "text": "The curtain uses separate upper and lower thresholds for light and temperature, reducing repeated switching near a single boundary."
-          },
-          {
-            "title": "Feedback at the entrance",
-            "text": "Keypad input, ultrasonic presence sensing, an OLED display and a servo make the access-control sequence visible on the model."
+            "title": "Environmental experiments",
+            "text": "The second node manages the stepper-driven curtain, light and temperature sensing, and the ceiling-mounted fan through a relay. The DHT sensor was placed outside the model so the team could apply a nearby heat source and observe its response during temperature tests. Separate upper and lower thresholds provide hysteresis in automatic curtain control."
           }
         ],
-        "outcome": "The resulting scale model brings together sensor readings, actuator movement and remote commands. It remains an educational prototype: actuator operations are blocking, communication uses plain MQTT and access relies on a demonstration PIN. Non-blocking control and stronger communication security are natural next steps.",
-        "credits": "Team: Francesco Apicella, Luigi Autorino and Emanuel Chirico. Photographs and technical details from the LUMA repository.",
+        "outcome": "The prototype makes the complete sensing–decision–action chain tangible: physical inputs become readings, the firmware interprets them, and actuators change the model. Node-RED provided the original dashboard for remote interaction. LUMA remains an educational prototype; the project repository documents its firmware, MQTT interface and remaining engineering work.",
+        "credits": "Team: Francesco Apicella, Luigi Autorino and Emanuel Chirico. Technical description based on the LUMA repository; exterior DHT placement, thermal testing and ceiling-mounted ventilation clarified by Emanuel.",
         "images": [
           {
             "src": "assets/projects/luma/prototype.webp",

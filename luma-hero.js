@@ -2,17 +2,168 @@
 (() => {
   'use strict';
   const chapters = [
-    {short:'Overview',name:'A little home. A connected world.',eyebrow:'LUMA / The physical prototype',text:'LUMA brings sensing, access control and everyday automation into a miniature wooden house. Two independent ESP32 applications connect the entrance and the curtain to the same MQTT broker.',more:'Scroll through the model to follow a signal from the physical world to a sensor, a controller and an actuator. The tour moves around the house, opens the door and lifts the roof as each subsystem is introduced.',specs:['2 ESP32 nodes running MicroPython','Wi-Fi / MQTT coordination','Node-RED dashboard in the original prototype'],tags:'A team project by Francesco Apicella, Luigi Autorino and Emanuel Chirico.',view:[.82,.49,11.6,0,1.65,0],focus:0},
-    {short:'Presence',name:'The entrance notices you first.',eyebrow:'Entrance / HC-SR04 & status LED',text:'The ultrasonic module on the front wall measures distance by sending a pulse and timing its return. In the documented entrance flow, approaching within 20 cm activates the presence LED. Below 10 cm, the OLED presents the logo and keypad prompt.',more:'Presence prepares the interface for interaction; the PIN sequence controls access. The two vertically mounted transducers and the small LED are reconstructed from the prototype photograph.',specs:['Trigger: GPIO 33 · Echo: GPIO 32','Presence LED: GPIO 23','Interaction thresholds: 20 cm / 10 cm'],tags:'Sense presence → prepare the interface',view:[.05,.14,5.6,-.12,1.0,1.7],focus:1},
-    {short:'Access',name:'A code, with feedback at every step.',eyebrow:'Entrance / Matrix keypad & SSD1306 OLED',text:'The matrix keypad provides a local way to enter the four-character demonstration PIN. The firmware handles submission, deletion, clearing the input and toggling whether entered characters are visible.',more:'The 128 × 64 OLED communicates the interaction state. Keypad input, display feedback and the servo are part of the same entrance application, while MQTT also allows remote door commands.',specs:['Keypad rows: GPIO 2 / 0 / 4 / 16','Keypad columns: GPIO 17 / 5 / 18 / 19','SSD1306: I²C · SCL 22 / SDA 21'],tags:'A demonstration access mechanism with a configurable PIN.',view:[.02,.08,5.3,-.80,1.95,1.75],focus:1},
-    {short:'Door',name:'From a valid command to movement.',eyebrow:'Entrance / Servo actuator',text:'After the access sequence, a servo operates the miniature door. The control signal uses PWM on GPIO 26 at 50 Hz, linking the access decision to a visible mechanical action.',more:'The same application listens for apri and chiudi on the Porta MQTT topic. The model opens the door here to show the actuator’s role in the complete sensing–decision–action chain.',specs:['Servo control: GPIO 26 · 50 Hz PWM','MQTT topic: Porta','Commands: apri / chiudi'],tags:'The movement shown here is an illustrative animation.',view:[.28,.18,6.2,.95,1.2,1.6],door:true,focus:1},
-    {short:'Curtain',name:'A small motor moves the room’s boundary.',eyebrow:'Curtain / 28BYJ-48 stepper & driver',text:'The side of the house carries a fabric curtain, roller and geared stepper motor. The second ESP32 controls the 28BYJ-48 through its driver, supporting manual commands as well as light, temperature and schedule modes.',more:'The firmware uses a default movement of 1,350 step sequences, which must be adapted to the real mechanism. Published step counts are relative to boot; they are not a measured percentage of curtain opening.',specs:['Driver sequence: GPIO 32 / 33 / 25 / 27','Manual topic: tenda/comando','Movement telemetry: tenda/step'],tags:'The striped fabric and motor placement follow the visible side of the model.',view:[1.48,.24,6.8,2.05,1.65,0],curtain:true,focus:2},
-    {short:'Sensors',name:'Light and temperature become decisions.',eyebrow:'Curtain node / DHT22 & TSL2561',text:'The DHT22 supplies temperature and humidity readings; the TSL2561 measures ambient light over I²C. In temperature mode the curtain closes above 25 °C and opens below 24 °C. In light mode it closes above 800 lux and opens below 600 lux.',more:'These separate upper and lower limits create hysteresis, reducing repeated switching near a single threshold. Humidity is reported for monitoring and does not drive curtain movement. The internal sensor placement in this reconstruction is schematic.',specs:['DHT22 data: GPIO 17','TSL2561: I²C · SCL 23 / SDA 22','Mode updates: approximately every 3 seconds'],tags:'Two thresholds → less switching around a boundary',view:[.8,.95,7.5,.95,.65,.1],roof:true,xray:true,explode:.12,focus:3},
-    {short:'Ventilation',name:'Ventilation has its own control path.',eyebrow:'Curtain node / Fan & relay',text:'A relay on GPIO 5 switches the fan. Commands on casa/ventola select ventilation mode and turn the output on or off. Selecting this mode suspends the automatic curtain modes in the current implementation.',more:'Ventilation follows an explicit command path in the current firmware. The fan and relay shown inside the house illustrate how the controller switches the physical output.',specs:['Relay output: GPIO 5','MQTT topic: casa/ventola','Commands: on / off'],tags:'Fan motion in the 3D scene is illustrative.',view:[-.48,1.0,7.4,-1.15,.6,-.8],roof:true,xray:true,explode:.18,fan:true,focus:3},
-    {short:'MQTT',name:'Two boards, one conversation.',eyebrow:'System / ESP32, Wi-Fi & MQTT',text:'The boards run separate MicroPython applications: one owns entrance interaction, the other owns the curtain, environmental readings and ventilation. Both exchange commands and telemetry through an MQTT broker; Node-RED provided the original dashboard.',more:'Temperature and humidity readings are published approximately every three seconds as temperature|humidity. Requests and readings share the legacy casa/richiestaDati topic, so clients distinguish get requests from data payloads. The two board positions and wire routes shown here are schematic.',specs:['Porta · door commands','tenda/comando · curtain commands','casa/richiestaDati · environmental data'],tags:'The repository documents the protocol; the original Node-RED flow is not included.',view:[.8,.95,8.6,0,.7,-.65],roof:true,xray:true,explode:.25,focus:3},
-    {short:'Assembly',name:'The prototype, layer by layer.',eyebrow:'Construction / Enclosure & integration',text:'The wooden enclosure brings the keypad, display, door and side curtain into a single physical demonstration. Lifting the roof and separating the walls makes the relationships between the exterior interface and the embedded nodes easier to inspect.',more:'A working scale model makes integration issues visible: motor travel, sensor placement, power, cabling and application timing all matter together. The repository identifies blocking actuator operations, network recovery and curtain homing as areas for further development.',specs:['Visible geometry reconstructed from photographs','Internal layout and wiring are illustrative','Separate firmware deployment for each ESP32'],tags:'From component-level code to a complete physical interaction',view:[.86,.72,13.0,0,1.6,0],roof:true,xray:true,explode:.8,focus:3},
-    {short:'Explore',name:'Now take the model into your hands.',eyebrow:'Inspector / Explore freely',text:'Drag the house to orbit it, zoom in, move the curtain or open the door. Use the model controls for X-ray, roof lifting and an exploded view, then continue down to the original photographs and project documentation.',more:'This is a photo-based reconstruction of the prototype, with approximate proportions and a schematic interior. The controls animate the website model; they do not operate real hardware or display live sensor data.',specs:['Drag or arrow keys to orbit','+ / − to zoom · Home to reset the view','Continue scrolling for the project story'],tags:'The original prototype photographs remain below for reference.',view:[.82,.49,11.6,0,1.65,0],roof:true,explode:.25,focus:0}
+  {
+    "short": "Overview",
+    "eyebrow": "LUMA / The physical prototype",
+    "view": [
+      0.82,
+      0.49,
+      11.6,
+      0,
+      1.65,
+      0
+    ],
+    "focus": 0
+  },
+  {
+    "short": "Presence",
+    "eyebrow": "Entrance / HC-SR04 & status LED",
+    "view": [
+      0.05,
+      0.14,
+      5.6,
+      -0.12,
+      1,
+      1.7
+    ],
+    "focus": 1
+  },
+  {
+    "short": "Access",
+    "eyebrow": "Entrance / Matrix keypad & SSD1306 OLED",
+    "view": [
+      0.02,
+      0.08,
+      5.3,
+      -0.8,
+      1.95,
+      1.75
+    ],
+    "focus": 1
+  },
+  {
+    "short": "Door",
+    "eyebrow": "Entrance / Servo actuator",
+    "view": [
+      0.28,
+      0.18,
+      6.2,
+      0.95,
+      1.2,
+      1.6
+    ],
+    "door": true,
+    "focus": 1
+  },
+  {
+    "short": "Curtain",
+    "eyebrow": "Curtain / 28BYJ-48 stepper & driver",
+    "view": [
+      1.48,
+      0.24,
+      6.8,
+      2.05,
+      1.65,
+      0
+    ],
+    "curtain": true,
+    "focus": 2
+  },
+  {
+    "short": "Sensors",
+    "eyebrow": "Curtain node / DHT22 & TSL2561",
+    "view": [
+      0.8,
+      0.95,
+      7.5,
+      0.95,
+      0.65,
+      0.1
+    ],
+    "roof": true,
+    "xray": true,
+    "explode": 0.12,
+    "focus": 3
+  },
+  {
+    "short": "Ventilation",
+    "eyebrow": "Curtain node / Fan & relay",
+    "view": [
+      -0.48,
+      1,
+      7.4,
+      -1.15,
+      0.6,
+      -0.8
+    ],
+    "roof": true,
+    "xray": true,
+    "explode": 0.18,
+    "fan": true,
+    "focus": 3
+  },
+  {
+    "short": "MQTT",
+    "eyebrow": "System / ESP32, Wi-Fi & MQTT",
+    "view": [
+      0.8,
+      0.95,
+      8.6,
+      0,
+      0.7,
+      -0.65
+    ],
+    "roof": true,
+    "xray": true,
+    "explode": 0.25,
+    "focus": 3
+  },
+  {
+    "short": "Assembly",
+    "eyebrow": "Construction / Enclosure & integration",
+    "view": [
+      0.86,
+      0.72,
+      13,
+      0,
+      1.6,
+      0
+    ],
+    "roof": true,
+    "xray": true,
+    "explode": 0.8,
+    "focus": 3
+  },
+  {
+    "short": "Explore",
+    "eyebrow": "Inspector / Explore freely",
+    "view": [
+      0.82,
+      0.49,
+      11.6,
+      0,
+      1.65,
+      0
+    ],
+    "roof": true,
+    "explode": 0.25,
+    "focus": 0
+  }
+];
+  const notes = [
+    ['A connected home in miniature','Two ESP32 nodes coordinate access, sensing, the curtain and ventilation through MQTT. Scroll to explore the house.'],
+    ['Presence at the entrance','The ultrasonic sensor detects an approaching visitor. The LED and OLED prepare the interface before the PIN is entered.'],
+    ['Keypad & OLED','A four-character demonstration PIN controls local access. The horizontal OLED shows prompts and feedback.'],
+    ['The door comes to life','A servo opens the miniature door after the access sequence, or on a remote MQTT command.'],
+    ['The automated curtain','A geared stepper moves the fabric curtain. Manual commands and automatic modes share the same actuator.'],
+    ['Temperature, tested outside','The DHT sensor sits outside the house. The team applied a nearby heat source during testing to check the response to a temperature change. Light is measured by the TSL2561.'],
+    ['Ventilation from the ceiling','The fan is mounted beneath the roof. A relay switches it from the curtain node; only its blades rotate in this demonstration.'],
+    ['Two nodes, one system','The entrance and curtain run independent MicroPython applications. MQTT carries commands and environmental readings to the dashboard.'],
+    ['Inside the model','The roof and walls separate to reveal the relationship between the exterior controls and the two embedded nodes.'],
+    ['Explore freely','Drag to orbit, zoom in or open the model controls. Continue scrolling for a short account of the project.']
   ];
+  chapters[5].view=[1.95,.18,6.5,2.15,2.25,-1.2];Object.assign(chapters[5],{roof:false,xray:false,explode:0});
+  chapters[6].view=[-.65,-.20,7.8,-.9,2.55,-.27];Object.assign(chapters[6],{roof:false,xray:true,explode:0});
   const markup = () => `<section class="luma-hero" aria-label="LUMA scroll-guided 3D presentation">
     <div class="luma-hero-top"><p>Embedded / Smart Home</p><span>2026 · Team project</span></div>
     <header class="luma-scroll-heading"><div class="luma-identity"><h2 id="storyTitle">LUMA</h2><img src="assets/projects/luma/logo.webp" width="72" height="72" alt="LUMA project logo"></div><p>Explore a connected home,<br>one component at a time.<span>Scroll to begin the guided tour</span></p></header>
@@ -21,12 +172,13 @@
         <div class="luma-tour-status"><span class="luma-tour-count">01 / 10</span><span class="luma-tour-label">The physical prototype</span></div>
         <div class="luma-viewer"><div class="luma-stage"><img class="luma-poster" src="assets/projects/luma/prototype.webp" alt="The real LUMA prototype used as the reconstruction reference"><div class="luma-loading" role="status">Building the miniature…</div><canvas class="luma-canvas" tabindex="0" role="img" aria-label="3D model of LUMA, following the component explanations as you scroll. Drag or use arrow keys to orbit, plus and minus to zoom, and Home to reset the current view."></canvas>
           <div class="luma-hotspots"><button type="button" data-luma-hotspot="1" aria-label="Read about the entrance"><span></span><b>Entrance</b></button><button type="button" data-luma-hotspot="4" aria-label="Read about the curtain"><span></span><b>Curtain</b></button><button type="button" data-luma-hotspot="7" aria-label="Read about the ESP32 nodes"><span></span><b>ESP32 × 2</b></button></div>
+          <aside class="luma-callout" aria-live="polite"><p class="luma-eyebrow">The physical prototype</p><h3>${notes[0][0]}</h3><p class="luma-callout-text">${notes[0][1]}</p></aside>
           <p class="luma-gesture">Scroll to follow <span>·</span> Drag to inspect</p><div class="luma-zoom"><button type="button" data-luma-action="zoom-in" aria-label="Zoom in">+</button><button type="button" data-luma-action="zoom-out" aria-label="Zoom out">−</button><button type="button" data-luma-action="reset" aria-label="Reset the current 3D view">Reset</button></div>
         </div></div>
         <nav class="luma-tour-nav" aria-label="Jump to a component">${chapters.map((item,i)=>`<button type="button" data-luma-chapter="${i}" aria-label="${item.short}" aria-pressed="${i===0}" title="${item.short}"><span></span></button>`).join('')}</nav>
         <details class="luma-inspector-tools"><summary>Model controls</summary><div class="luma-controls" aria-label="3D model controls"><div class="luma-toggles"><button type="button" data-luma-action="rotate" aria-pressed="false">Auto orbit</button><button type="button" data-luma-action="xray" aria-pressed="false">X-ray</button><button type="button" data-luma-action="roof" aria-pressed="false">Lift roof</button><button type="button" data-luma-action="door" aria-pressed="false">Open door</button><button type="button" data-luma-action="curtain" aria-pressed="false">Raise curtain</button><button type="button" data-luma-action="fan" aria-pressed="false">Run fan</button></div><label class="luma-explode">Explode <input type="range" min="0" max="100" value="0" aria-label="Explode the LUMA model"><output>0%</output></label></div></details>
       </div>
-      <div class="luma-narrative">${chapters.map((item,i)=>`<section class="luma-scroll-chapter${i===0?' is-active':''}" data-luma-step="${i}" aria-labelledby="luma-chapter-${i}"><p class="luma-eyebrow">${item.eyebrow}</p><h3 id="luma-chapter-${i}">${item.name}</h3><p class="luma-description">${item.text}</p><p class="luma-description">${item.more}</p><ul class="luma-component-specs">${item.specs.map(spec=>`<li>${spec}</li>`).join('')}</ul><p class="luma-tags">${item.tags}</p></section>`).join('')}</div>
+      <div class="luma-narrative" aria-hidden="true">${chapters.map((item,i)=>`<div class="luma-scroll-chapter${i===0?' is-active':''}" data-luma-step="${i}"></div>`).join('')}</div>
     </div>
     <div class="luma-model-note"><p>Photo-based reconstruction. Proportions are approximate; hidden electronics and wire routes are schematic.</p><a href="#story-overview" data-story-section="story-overview">Continue to the project story</a></div>
   </section>`;
@@ -71,6 +223,9 @@
       host.querySelector('.luma-tour-count').textContent=`${String(index+1).padStart(2,'0')} / ${chapters.length}`;
       host.querySelector('.luma-tour-label').textContent=view.eyebrow.split(' / ').slice(-1)[0];
       const input=host.querySelector('input');input.value=Math.round(state.explode*100);host.querySelector('output').textContent=input.value+'%';
+      const popup=host.querySelector('.luma-callout');popup.querySelector('.luma-eyebrow').textContent=view.eyebrow;
+      popup.querySelector('h3').textContent=notes[index][0];popup.querySelector('.luma-callout-text').textContent=notes[index][1];
+      if(!reduced.matches)popup.animate([{opacity:0,transform:'translateY(8px)'},{opacity:1,transform:'translateY(0)'}],{duration:220});
       updateButtons();wake();
     }
     function measureScroll() {
@@ -78,13 +233,13 @@
       const rect=scroller.getBoundingClientRect(),header=scroller.querySelector('.story-bar');
       const top=getComputedStyle(header).position==='sticky'?header.getBoundingClientRect().height+10:0;
       host.style.setProperty('--luma-sticky-top',top+'px');
-      const focus=rect.top+(compact.matches?Math.min(sticky.getBoundingClientRect().height,rect.height*.58)+rect.height*.16:rect.height*.44);
+      const focus=rect.top+rect.height*.5;
       let active=0;steps.forEach((step,i)=>{if(step.getBoundingClientRect().top<=focus)active=i;});
       if(active!==state.chapter)chapter(active);
     }
     const scheduleScroll=()=>{if(!scrollFrame)scrollFrame=requestAnimationFrame(measureScroll);};
     function jump(index) {
-      const rect=scroller.getBoundingClientRect(),offset=compact.matches?sticky.getBoundingClientRect().height+24:rect.height*.25;
+      const rect=scroller.getBoundingClientRect(),offset=rect.height*.25;
       scroller.scrollTo({top:scroller.scrollTop+steps[index].getBoundingClientRect().top-rect.top-offset,behavior:reduced.matches?'auto':'smooth'});
     }
     buttons('[data-luma-chapter],[data-luma-hotspot]').forEach(button=>on(button,'click',()=>jump(Number(button.dataset.lumaChapter??button.dataset.lumaHotspot))));
@@ -100,13 +255,13 @@
     on(host.querySelector('input'),'input',event=>{state.explode=Number(event.target.value)/100;host.querySelector('output').textContent=event.target.value+'%';wake();});
     let pointer=null;
     on(canvas,'pointerdown',event=>{if(event.button!==0)return;pointer={id:event.pointerId,x:event.clientX,y:event.clientY};canvas.setPointerCapture(event.pointerId);state.rotate=false;updateButtons();});
-    on(canvas,'pointermove',event=>{if(!pointer||pointer.id!==event.pointerId)return;targetYaw-=(event.clientX-pointer.x)*.008;if(event.pointerType==='mouse')targetPitch=Math.max(.08,Math.min(1.25,targetPitch+(event.clientY-pointer.y)*.006));pointer.x=event.clientX;pointer.y=event.clientY;wake();});
+    on(canvas,'pointermove',event=>{if(!pointer||pointer.id!==event.pointerId)return;targetYaw-=(event.clientX-pointer.x)*.008;if(event.pointerType==='mouse')targetPitch=Math.max(-.35,Math.min(1.25,targetPitch+(event.clientY-pointer.y)*.006));pointer.x=event.clientX;pointer.y=event.clientY;wake();});
     const release=()=>{pointer=null;};on(canvas,'pointerup',release);on(canvas,'pointercancel',release);on(canvas,'lostpointercapture',release);
     on(canvas,'keydown',event=>{
       if(!['ArrowLeft','ArrowRight','ArrowUp','ArrowDown','+','=','-','Home'].includes(event.key))return;
       event.preventDefault();state.rotate=false;
       if(event.key==='ArrowLeft')targetYaw+=.15;if(event.key==='ArrowRight')targetYaw-=.15;
-      if(event.key==='ArrowUp')targetPitch=Math.min(1.25,targetPitch+.12);if(event.key==='ArrowDown')targetPitch=Math.max(.08,targetPitch-.12);
+      if(event.key==='ArrowUp')targetPitch=Math.min(1.25,targetPitch+.12);if(event.key==='ArrowDown')targetPitch=Math.max(-.35,targetPitch-.12);
       if(event.key==='+'||event.key==='=')targetRadius=Math.max(4,targetRadius-.8);if(event.key==='-')targetRadius=Math.min(16,targetRadius+.8);if(event.key==='Home')chapter(state.chapter);
       updateButtons();wake();
     });
@@ -184,18 +339,28 @@
       const hem=cylinder(right,.035,.035,1.98,.70,.80,0,white);hem.rotation.x=Math.PI/2;
       // The roof is a light hinged lid with corrugated edges, as in the source photographs.
       const roof=makeGroup(0,2.91,-1.72);const roofPanel=box(roof,4.27,.065,3.60,0,0,1.72,wood);roof.rotation.x=-.09;
-      for(let i=0;i<23;i++)box(roof,.022,.016,3.58,-2.05+i*.185,.04,1.72,edge);
+      const roofRibs=[];for(let i=0;i<23;i++)roofRibs.push(box(roof,.022,.016,3.58,-2.05+i*.185,.04,1.72,edge));
       for(const x of [-1.5,1.5])box(rear,.26,.10,.13,x,2.83,.03,metal);
       // Two schematic ESP32 assemblies are revealed in inspection mode.
       const electronics=makeGroup(0,.36,0);const boardGroups=[];
       function board(x,z){const g=new Group();g.position.set(x,0,z);electronics.add(g);box(g,.49,.035,.86,0,0,0,pcb);box(g,.25,.05,.30,0,.045,.12,metal);box(g,.21,.035,.24,0,.045,-.17,black);for(const side of [-1,1])for(let i=0;i<13;i++)box(g,.027,.065,.023,side*.205,-.013,-.34+i*.052,gold);box(g,.18,.08,.10,0,.035,.45,metal);for(let i=0;i<5;i++)box(g,.27,.006,.015,0,.022,-.33+i*.03,gold);boardGroups.push(g);return g;}
       board(-.85,-.65);board(.85,-.65);
-      const sensorBoard=box(electronics,.24,.035,.27,.85,.07,.15,blue);box(electronics,.13,.13,.16,.85,.15,.15,white);for(let i=0;i<4;i++)box(electronics,.08,.014,.015,.85,.22,.10+i*.035,dark);
+      // Exterior DHT and ceiling-mounted fan follow the team's physical placement.
+      const exteriorDHT=makeGroup(2.17,2.25,-1.2);exteriorDHT.rotation.y=Math.PI/2;
+      box(exteriorDHT,.22,.32,.035,0,0,0,blue);box(exteriorDHT,.15,.23,.065,0,.02,.045,white);
+      for(let row=0;row<4;row++)for(let col=0;col<3;col++)box(exteriorDHT,.023,.023,.006,-.045+col*.045,-.055+row*.045,.081,dark);
       box(electronics,.19,.025,.20,1.3,.07,.15,blue);sphere(electronics,.045,1.3,.105,.15,gold);
       box(electronics,.34,.12,.27,1.15,.09,-1.10,blue);
-      const fan=new Group();fan.position.set(-1.3,.20,-.9);electronics.add(fan);box(fan,.60,.09,.60,0,0,0,dark);cylinder(fan,.18,.18,.11,0,.02,0,black);const fanRotor=new Group();fan.add(fanRotor);for(let i=0;i<5;i++){const blade=box(fanRotor,.08,.035,.28,Math.sin(i*Math.PI*2/5)*.18,.08,Math.cos(i*Math.PI*2/5)*.18,metal);blade.rotation.y=i*Math.PI*2/5+.6;}
+      const fan=new Group();fan.position.set(-.9,-.15,1.45);roof.add(fan);
+      box(fan,.72,.07,.72,0,0,0,dark);
+      const rim=mesh(new TorusGeometry(.29,.025,8,40),metal,fan,0,-.07,0);rim.rotation.x=Math.PI/2;
+      cylinder(fan,.07,.07,.10,0,-.085,0,black);
+      const fanRotor=new Group();fanRotor.position.y=-.095;fan.add(fanRotor);
+      const bladeShape=new THREE.Shape();bladeShape.moveTo(.025,.01);bladeShape.bezierCurveTo(.15,.15,.31,.12,.27,.015);bladeShape.bezierCurveTo(.22,-.045,.10,-.025,.025,-.01);bladeShape.closePath();
+      for(let i=0;i<5;i++){const blade=mesh(new THREE.ShapeGeometry(bladeShape),material(0x617b84,{side:DoubleSide,metalness:.5,roughness:.45}),fanRotor);blade.rotation.x=Math.PI/2;blade.rotation.z=i*Math.PI*2/5;}
+      for(const x of [-.29,.29])for(const z of [-.29,.29])cylinder(fan,.025,.025,.12,x,-.01,z,metal,10);
       function wire(points,color){const curve=new CatmullRomCurve3(points.map(p=>new Vector3(...p)));return mesh(new TubeGeometry(curve,18,.009,5,false),material(color),electronics);}
-      wire([[-.8,.06,-.5],[-1.15,.15,-.1],[-1.3,.12,.9],[-1.1,.8,1.55]],0xbb533c);wire([[-.6,.07,-.5],[-.35,.13,-.1],[.2,.17,.5],[1.2,.10,.7]],0xc6a644);wire([[.9,.06,-.5],[1.3,.15,-.2],[1.6,.25,.1],[1.75,1.8,.5]],0x436d98);wire([[.8,.06,-.6],[.4,.17,-.3],[.6,.14,.1],[.85,.09,.15]],0x35333b);
+      wire([[-.8,.06,-.5],[-1.15,.15,-.1],[-1.3,.12,.9],[-1.1,.8,1.55]],0xbb533c);wire([[-.6,.07,-.5],[-.35,.13,-.1],[.2,.17,.5],[1.2,.10,.7]],0xc6a644);wire([[.9,.06,-.5],[1.3,.15,-.2],[1.6,.25,.1],[1.75,1.8,.5]],0x436d98);wire([[.8,.06,-.6],[1.2,.17,-.9],[1.8,1.5,-1.2],[2.14,1.85,-1.2]],0x35333b);
       // Small exterior details anchor the reconstruction to the photograph.
       const plant=makeGroup(2.25,.18,1.98);cylinder(plant,.24,.17,.42,0,.21,0,material(0xa65e3d));cylinder(plant,.255,.255,.06,0,.43,0,material(0xbc7650));cylinder(plant,.225,.225,.012,0,.45,0,material(0x30251e));
       for(let i=0;i<13;i++){const angle=i*2.39996;const leaf=mesh(new THREE.ConeGeometry(.07,.65+random()*.4,4),material(i%2?0x31503b:0x4a6740),plant,Math.sin(angle)*.10,.74+random()*.09,Math.cos(angle)*.10);leaf.rotation.z=Math.cos(angle)*.6;leaf.rotation.x=Math.sin(angle)*.6;}
@@ -214,16 +379,16 @@
         explode+=(state.explode-explode)*a;lift+=((state.roof?1:0)-lift)*a;doorAngle+=((state.door?-1.35:0)-doorAngle)*a;curtainOpen+=((state.curtain ? .84 : 0)-curtainOpen)*a;
         facade.position.z=original.facade.z+explode*.95;rear.position.z=original.rear.z-explode*.95;left.position.x=original.left.x-explode*.95;right.position.x=original.right.x+explode*1.2;
         roof.position.y=2.91+lift*1.7+explode*1.7;roof.rotation.x=-.09-lift*.30;electronics.position.y=.36+explode*.5;boardGroups.forEach((b,i)=>b.position.x=(i?1:-1)*(.85+explode*.35));
-        roof.visible=![5,6,7].includes(state.chapter);if(state.fan&&!reduced.matches)fanRotor.rotation.y+=dt*6;
+        roof.visible=true;roofPanel.visible=state.chapter!==7;roofPanel.material=state.chapter===6?ghost:wood;roofRibs.forEach(rib=>{rib.visible=![6,7].includes(state.chapter);});if(state.fan&&!reduced.matches)fanRotor.rotation.y+=dt*6;
         doorPivot.rotation.y=doorAngle;cloth.scale.y=1-curtainOpen;const drop=1.66*(1-curtainOpen);cloth.position.set(.16+drop*.14,2.35-drop*.48,0);hem.position.set(.16+drop*.28,2.35-drop*.96,0);
         walls.forEach(w=>{w.material=state.xray?ghost:originalWallMaterials.get(w);w.castShadow=!state.xray;});
         const fittedRadius=radius*Math.max(1,.98/camera.aspect)*(1+explode*.13+lift*.04);
         camera.position.set(focusX+Math.sin(yaw)*Math.cos(pitch)*fittedRadius,focusY+Math.sin(pitch)*fittedRadius,focusZ+Math.cos(yaw)*Math.cos(pitch)*fittedRadius);camera.lookAt(focusX,focusY,focusZ);
-        const component=[null,[-.12,.85,1.88,.8],[-.8,1.98,1.85,1.8],[1.0,1.12,1.83,2.0],[2.3,1.7,.1,2.5],[1.0,.68,.15,1.15],[-1.3,.64,-.9,1.45],[0,.65,-.65,2.3]][state.chapter];
-        highlight.visible=!!component&&state.chapter!==2;if(component){highlight.position.set(component[0]+(state.chapter===4?explode*1.2:0),component[1]+(state.chapter>=5?explode*.5:0),component[2]+(state.chapter<=3?explode*.95:0));highlight.scale.setScalar(component[3]);highlight.quaternion.copy(camera.quaternion);}
+        const component=[null,[-.12,.85,1.88,.8],[-.8,1.98,1.85,1.8],[1.0,1.12,1.83,2.0],[2.3,1.7,.1,2.5],[2.25,2.25,-1.2,.75],[-.9,2.70,-.27,1.4],[0,.65,-.65,2.3]][state.chapter];
+        highlight.visible=!!component&&state.chapter!==2;if(component){highlight.position.set(component[0]+(state.chapter===4?explode*1.2:0),component[1]+(state.chapter>=7?explode*.5:0),component[2]+(state.chapter<=3?explode*.95:0));highlight.scale.setScalar(component[3]);highlight.quaternion.copy(camera.quaternion);}
         renderer.render(scene,camera);
         anchors[0].set(state.chapter===1?-.12:state.chapter===3?1.0:-.8,state.chapter===1?.85:state.chapter===3?1.2:1.98,1.88+explode*.95);
-        anchors[1].set(2.18+explode*1.2,2.4,.3);anchors[2].set(state.chapter===5?1.0:state.chapter===6?-1.3:0,.75+explode*.5,state.chapter===5?.15:state.chapter===6?-.9:-.65);
+        anchors[1].set(2.18+explode*1.2,2.4,.3);anchors[2].set(state.chapter===5?2.25:state.chapter===6?-.9:0,state.chapter===5?2.4:state.chapter===6?2.7:.75+explode*.5,state.chapter===5?-1.2:state.chapter===6?-.27:-.65);
         const focus=chapters[state.chapter].focus;
         spotElements.forEach((el,i)=>{project.copy(anchors[i]).project(camera);el.style.left=`${(project.x*.5+.5)*width}px`;el.style.top=`${(-project.y*.5+.5)*height-(state.chapter===2?100:42)}px`;el.hidden=(focus>0&&focus!==i+1)||(i===2&&!state.roof&&!state.xray&&explode<.2)||project.z>1||Math.abs(project.x)>.92||Math.abs(project.y)>.9;});
         spotElements[0].querySelector('b').textContent=state.chapter===1?'HC-SR04':state.chapter===2?'Keypad + OLED':state.chapter===3?'Door servo':'Entrance';

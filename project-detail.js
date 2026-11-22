@@ -45,7 +45,7 @@
       const images = (detail.images || []).filter(image => safeURL(image.src));
       const primary = images[0];
       const points = detail.approach?.length ? pointList(detail.approach) : '';
-      const gallery = images.length > 1 ? `<div class="story-gallery">${(isLuma ? images : images.slice(1)).map(image => `<figure><img src="${safeURL(image.src)}" alt="${escape(image.alt)}" loading="lazy" width="800" height="600"><figcaption>${escape(image.caption)}</figcaption></figure>`).join('')}</div>` : '';
+      const gallery = !isLuma && images.length > 1 ? `<div class="story-gallery">${(isLuma ? images : images.slice(1)).map(image => `<figure><img src="${safeURL(image.src)}" alt="${escape(image.alt)}" loading="lazy" width="800" height="600"><figcaption>${escape(image.caption)}</figcaption></figure>`).join('')}</div>` : '';
       const architecture = detail.architecture?.nodes?.length ? `
         ${paragraph(detail.architecture.intro)}
         <div class="story-nodes" role="group" aria-label="Explore the three STM32 nodes">

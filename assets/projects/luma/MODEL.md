@@ -38,3 +38,15 @@ touch scrolling. Camera transitions respect reduced-motion preferences.
 Details such as GPIO assignments, 20/10 cm presence thresholds, temperature and
 light hysteresis, MQTT topics and mode behaviour follow `docs/setup.md` and
 `docs/mqtt.md` in the public LUMA repository.
+
+## Physical-placement clarification and presentation update
+
+Emanuel clarified that the DHT sensor was outside the house for temperature
+response testing with a nearby heat source, and that the fan was attached under
+the ceiling. The reconstruction now places the DHT externally and attaches the
+fan to the roof group, with a stationary frame and independently rotating blades.
+Exact exterior position and remaining wiring are schematic.
+
+The tour now uses a full-width sticky scene and short descriptive overlay cards.
+The previous long side narrative and the lower project gallery are not displayed.
+A concise project account follows the model.

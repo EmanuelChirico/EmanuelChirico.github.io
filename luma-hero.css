@@ -107,3 +107,32 @@
  .luma-scroll-heading > p { font-size:21px; }
  .luma-gesture { max-width:105px; }
 }
+
+/* A full-width scene with compact overlay notes; scroll spacers carry no side text. */
+.luma-scroll-story { display:block; }
+.luma-scroll-sticky { display:block; width:100%; height:calc(100svh - var(--luma-sticky-top)); z-index:2; }
+.luma-stage { height:calc(100svh - var(--luma-sticky-top) - 120px); min-height:350px; max-height:none; }
+.luma-scroll-sticky:has(details[open]) .luma-stage { height:calc(100svh - var(--luma-sticky-top) - 255px); min-height:280px; }
+.luma-narrative { position:relative; margin-top:calc(-1 * (100svh - var(--luma-sticky-top))); pointer-events:none; }
+.luma-scroll-chapter { height:78svh; min-height:0; padding:0; margin:0; border:0; }
+.luma-scroll-chapter.is-active { border:0; }
+.luma-callout { position:absolute; left:26px; bottom:72px; width:310px; max-width:calc(100% - 52px); padding:20px; background:color-mix(in srgb,var(--bg) 94%,transparent); border:1px solid var(--box); border-left:2px solid var(--red); box-shadow:0 10px 32px #0002; }
+.luma-callout h3 { font:22px/1.3 var(--display); font-weight:400; text-transform:uppercase; margin:10px 0; }
+.luma-callout-text { font-size:14px; line-height:1.75; color:var(--muted); }
+.luma-callout .luma-eyebrow { font-size:10px; }
+.story-luma .story-body { display:block; max-width:880px; margin:0 auto; }
+.story-luma .story-toc { display:none; }
+.story-luma .story-section p { font-size:16px; }
+.story-luma .story-points strong,.story-luma .story-points span { font-size:15px; }
+@media (max-width:760px) {
+ .luma-scroll-sticky { height:100svh; }
+ .luma-stage { height:calc(100svh - 112px); min-height:330px; }
+ .luma-scroll-sticky:has(details[open]) .luma-stage { height:calc(100svh - 270px); min-height:260px; }
+ .luma-narrative { margin-top:-100svh; }
+ .luma-callout { left:12px; bottom:54px; width:auto; right:12px; max-width:none; padding:14px 16px; }
+ .luma-callout h3 { font-size:20px; margin:6px 0 8px; }
+ .luma-callout-text { font-size:13px; line-height:1.65; }
+ .luma-callout .luma-eyebrow { font-size:9px; }
+ .luma-gesture { display:none; }
+ .luma-hotspots button { font-size:10px; }
+}
