@@ -22,3 +22,19 @@ explicit model controls remain available.
 Three.js 0.169.0 is vendored in `assets/vendor/three.module.min.js` under its MIT
 license, included as `assets/vendor/three-LICENSE.txt`. Textures are generated
 locally from code; no external 3D assets or image-generation service are used.
+
+## Scroll-guided component tour
+
+Ten chapters follow native dialog scrolling: overview, presence, keypad/OLED,
+servo door, stepper curtain, environmental sensors, fan/relay, MQTT nodes,
+assembly and free inspection. A sticky model follows camera targets, highlights,
+actuator states and enclosure visibility for the currently read chapter. The
+scene remains draggable, and chapter indicators support direct navigation.
+
+Desktop keeps the model beside the text; narrow screens keep a compact model
+above the scrolling explanation. The tour does not capture the wheel or replace
+touch scrolling. Camera transitions respect reduced-motion preferences.
+
+Details such as GPIO assignments, 20/10 cm presence thresholds, temperature and
+light hysteresis, MQTT topics and mode behaviour follow `docs/setup.md` and
+`docs/mqtt.md` in the public LUMA repository.

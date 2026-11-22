@@ -1,91 +1,109 @@
-/* The 3D stage follows the portfolio palette; the model retains its physical colours. */
-.story-luma .story-wrap { max-width: 1360px; }
-.luma-hero { position: relative; padding-top: 32px; }
-.luma-hero-top { display: flex; justify-content: space-between; gap: 20px; font-size: 12px; letter-spacing: .12em; text-transform: uppercase; color: var(--muted); }
-.luma-hero-grid { display: grid; grid-template-columns: minmax(270px,.85fr) minmax(0,1.75fr); align-items: center; min-height: 650px; gap: 24px; }
-.luma-copy { position: relative; z-index: 1; padding: 44px 0; }
-.luma-identity { display: flex; align-items: center; justify-content: space-between; gap: 20px; }
-.luma-identity h2 { font: clamp(78px,8vw,128px)/1 var(--display); letter-spacing: .01em; }
-.luma-identity img { width: 64px; height: 64px; object-fit: contain; background: #080808; border-radius: 8px; }
-.luma-tagline { font-size: clamp(22px,2.5vw,34px); line-height: 1.35; margin-top: 22px; letter-spacing: -.025em; }
-.luma-chapter { margin-top: 38px; min-height: 216px; }
-.luma-eyebrow { font: 11px/1.7 var(--body); color: var(--red); letter-spacing: .12em; text-transform: uppercase; }
-.luma-chapter h3 { font-size: 18px; font-weight: 500; margin: 10px 0 14px; line-height: 1.5; }
-.luma-description { font-size: 16px; line-height: 1.85; color: var(--muted); max-width: 40ch; }
-.luma-tags { font: 12px/1.8 monospace; color: var(--muted); margin-top: 18px; }
-.luma-chapters { display: flex; flex-wrap: wrap; gap: 4px 16px; margin-top: 16px; }
-.luma-chapters button { color: var(--muted); border: 0; border-bottom: 2px solid transparent; padding: 10px 0; background: none; font: 13px/1.5 var(--body); cursor: pointer; }
-.luma-chapters button[aria-pressed="true"] { color: var(--cream); border-color: var(--red); }
-.luma-chapters button:hover { color: var(--cream); }
-.luma-viewer { min-width: 0; }
-.luma-stage { position: relative; width: 100%; height: clamp(480px,48vw,660px); isolation: isolate; overflow: hidden; background: radial-gradient(ellipse at 50% 55%,color-mix(in srgb,var(--cream) 7%,var(--bg)),transparent 68%); }
-.luma-stage::after { content:''; position: absolute; pointer-events: none; inset: 0; z-index:-1; opacity:.08; background-image: linear-gradient(var(--cream) 1px,transparent 1px),linear-gradient(90deg,var(--cream) 1px,transparent 1px); background-size: 50px 50px; mask-image: radial-gradient(ellipse,#000,transparent 70%); }
-.luma-canvas { display: block; position: absolute; inset: 0; width: 100%; height: 100%; opacity: 0; cursor: grab; touch-action: pan-y; }
-.luma-canvas:active { cursor: grabbing; }
-.luma-canvas:focus-visible { outline-offset: -4px; }
-.luma-ready .luma-canvas { opacity: 1; }
-.luma-poster { display: block; position: absolute; inset: 10% 0; width: 100%; height: 80%; object-fit: contain; opacity: .3; }
-.luma-ready .luma-poster { display: none; }
-.luma-loading { position: absolute; z-index: 2; left: 15%; right: 15%; top: 45%; padding: 16px; text-align:center; font-size: 14px; line-height: 1.8; background: var(--bg); }
-.luma-loading[hidden] { display: none; }
+/* Scroll-guided component story, within the project dialog's native scrolling. */
+.story-luma .story-wrap { max-width:1360px; }
+.luma-hero { position:relative; padding-top:30px; --luma-sticky-top:104px; }
+.luma-hero-top { display:flex; justify-content:space-between; gap:20px; font-size:12px; line-height:1.7; letter-spacing:.12em; text-transform:uppercase; color:var(--muted); }
+.luma-scroll-heading { display:grid; grid-template-columns:.85fr 1.75fr; align-items:center; gap:36px; padding:38px 0 26px; border-bottom:1px solid var(--box); }
+.luma-identity { display:flex; align-items:center; justify-content:space-between; gap:20px; }
+.luma-identity h2 { font:clamp(74px,8vw,120px)/1 var(--display); letter-spacing:.01em; }
+.luma-identity img { width:64px; height:64px; object-fit:contain; background:#080808; border-radius:8px; }
+.luma-scroll-heading > p { font-size:clamp(22px,2.7vw,36px); letter-spacing:-.025em; line-height:1.4; padding-left:28px; }
+.luma-scroll-heading > p span { display:block; font-size:12px; letter-spacing:.08em; text-transform:uppercase; color:var(--muted); margin-top:16px; }
+.luma-scroll-story { display:grid; grid-template-columns:minmax(260px,.85fr) minmax(0,1.75fr); align-items:start; gap:36px; position:relative; }
+.luma-narrative { grid-column:1; grid-row:1; min-width:0; }
+.luma-scroll-sticky { grid-column:2; grid-row:1; position:sticky; top:var(--luma-sticky-top); min-width:0; align-self:start; background:var(--bg); padding:12px 0 8px; }
+.luma-scroll-chapter { min-height:max(650px,calc(92svh - 120px)); padding:70px 0 95px; border-bottom:1px solid var(--box); scroll-margin-top:150px; }
+.luma-scroll-chapter.is-active { border-bottom-color:var(--red); }
+.luma-eyebrow { font:11px/1.8 var(--body); color:var(--red); letter-spacing:.12em; text-transform:uppercase; }
+.luma-scroll-chapter h3 { font:clamp(27px,3vw,38px)/1.3 var(--display); text-transform:uppercase; font-weight:400; letter-spacing:.01em; margin:18px 0 24px; }
+.luma-description { font-size:16px; line-height:1.9; color:var(--muted); margin:0 0 18px; }
+.luma-component-specs { list-style:none; border-top:1px solid var(--box); margin:26px 0 18px; padding-top:12px; }
+.luma-component-specs li { font:13px/1.9 monospace; color:var(--cream); padding:7px 0; border-bottom:1px solid color-mix(in srgb,var(--box) 45%,transparent); overflow-wrap:anywhere; }
+.luma-tags { font-size:12px; line-height:1.8; color:var(--muted); }
+.luma-tour-status { display:flex; align-items:baseline; gap:18px; padding:5px 10px 10px; font-size:12px; line-height:1.5; color:var(--muted); }
+.luma-tour-count { font-family:monospace; color:var(--red); white-space:nowrap; }
+.luma-tour-label { overflow:hidden; text-overflow:ellipsis; white-space:nowrap; }
+.luma-viewer { min-width:0; }
+.luma-stage { position:relative; width:100%; height:clamp(300px,calc(100svh - var(--luma-sticky-top) - 145px),650px); isolation:isolate; overflow:hidden; background:radial-gradient(ellipse at 50% 55%,color-mix(in srgb,var(--cream) 7%,var(--bg)),transparent 68%); }
+.luma-scroll-sticky:has(details[open]) .luma-stage { height:clamp(260px,calc(100svh - var(--luma-sticky-top) - 285px),520px); }
+.luma-stage::after { content:''; position:absolute; pointer-events:none; inset:0; z-index:-1; opacity:.08; background-image:linear-gradient(var(--cream) 1px,transparent 1px),linear-gradient(90deg,var(--cream) 1px,transparent 1px); background-size:50px 50px; mask-image:radial-gradient(ellipse,#000,transparent 70%); }
+.luma-canvas { display:block; position:absolute; inset:0; width:100%; height:100%; opacity:0; cursor:grab; touch-action:pan-y; }
+.luma-canvas:active { cursor:grabbing; }
+.luma-canvas:focus-visible { outline-offset:-4px; }
+.luma-ready .luma-canvas { opacity:1; }
+.luma-poster { position:absolute; inset:10% 0; display:block; width:100%; height:80%; object-fit:contain; opacity:.3; }
+.luma-ready .luma-poster { display:none; }
+.luma-loading { position:absolute; z-index:2; left:15%; right:15%; top:45%; padding:16px; text-align:center; font-size:14px; line-height:1.8; background:var(--bg); }
+.luma-loading[hidden] { display:none; }
 .luma-hotspots { position:absolute; inset:0; pointer-events:none; }
 .luma-hotspots button { position:absolute; display:flex; align-items:center; gap:8px; pointer-events:auto; transform:translate(-50%,-50%); padding:9px 12px; border:1px solid var(--box); background:var(--bg); color:var(--cream); border-radius:4px; font:12px/1.4 var(--body); cursor:pointer; white-space:nowrap; box-shadow:0 4px 20px #0002; }
+.luma-hotspots b { font-weight:400; }
+.luma-hotspots button::after { content:''; position:absolute; top:100%; left:50%; height:25px; width:1px; background:var(--red); pointer-events:none; }
 .luma-hotspots button[hidden] { display:none; }
 .luma-hotspots button:hover { border-color:var(--red); }
 .luma-hotspots button span { width:7px; height:7px; border-radius:50%; background:var(--red); flex-shrink:0; }
-.luma-gesture { position:absolute; bottom:20px; left:20px; font-size:11px; color:var(--muted); line-height:1.6; pointer-events:none; }
+.luma-gesture { position:absolute; bottom:18px; left:14px; font-size:11px; color:var(--muted); line-height:1.6; pointer-events:none; }
 .luma-gesture span { margin:0 7px; }
-.luma-zoom { position:absolute; display:flex; gap:2px; right:12px; bottom:12px; }
+.luma-zoom { position:absolute; display:flex; gap:2px; right:10px; bottom:10px; }
 .luma-zoom button { display:grid; place-items:center; min-width:36px; min-height:40px; padding:8px; border:1px solid var(--box); background:var(--bg); color:var(--cream); font:13px var(--body); cursor:pointer; }
-.luma-zoom button:first-child, .luma-zoom button:nth-child(2) { font-size:20px; }
-.luma-controls { display:flex; flex-wrap:wrap; align-items:center; justify-content:space-between; gap:18px 24px; padding:20px 0; border-top:1px solid var(--box); border-bottom:1px solid var(--box); }
-.luma-toggles { display:flex; flex-wrap:wrap; gap:8px; }
-.luma-toggles button { border:1px solid var(--box); color:var(--muted); background:none; padding:11px 14px; font:13px/1.4 var(--body); cursor:pointer; min-height:42px; }
+.luma-zoom button:first-child,.luma-zoom button:nth-child(2) { font-size:20px; }
+.luma-tour-nav { display:grid; grid-template-columns:repeat(10,minmax(0,1fr)); gap:6px; padding:2px 10px 5px; }
+.luma-tour-nav button { display:flex; align-items:center; height:28px; width:100%; border:0; padding:0; background:transparent; cursor:pointer; }
+.luma-tour-nav button span { width:100%; height:2px; background:var(--box); }
+.luma-tour-nav button[aria-pressed="true"] span { height:3px; background:var(--red); }
+.luma-tour-nav button:hover span { background:var(--cream); }
+.luma-inspector-tools { border-top:1px solid var(--box); }
+.luma-inspector-tools summary { padding:12px 10px; font:12px/1.5 var(--body); color:var(--muted); cursor:pointer; }
+.luma-controls { display:flex; flex-wrap:wrap; gap:12px; padding:8px 10px 16px; }
+.luma-toggles { display:flex; flex-wrap:wrap; gap:6px; }
+.luma-toggles button { border:1px solid var(--box); color:var(--muted); background:none; padding:10px 12px; font:12px/1.4 var(--body); cursor:pointer; min-height:40px; }
 .luma-toggles button[aria-pressed="true"] { color:var(--cream); border-color:var(--red); background:color-mix(in srgb,var(--red) 9%,var(--bg)); }
 .luma-toggles button:hover { border-color:var(--cream); color:var(--cream); }
-.luma-explode { display:flex; align-items:center; gap:12px; font-size:13px; color:var(--muted); }
-.luma-explode input { width:130px; accent-color:var(--red); cursor:pointer; min-height:36px; }
+.luma-explode { display:flex; align-items:center; gap:12px; font-size:13px; color:var(--muted); width:100%; }
+.luma-explode input { flex:1; min-width:50px; accent-color:var(--red); cursor:pointer; min-height:30px; }
 .luma-explode output { min-width:4ch; text-align:right; font:12px monospace; }
-.luma-model-note { display:flex; align-items:baseline; justify-content:space-between; gap:20px; padding:15px 0 22px; color:var(--muted); font-size:12px; line-height:1.8; }
-.luma-model-note p { max-width:80ch; }
+.luma-model-note { display:flex; align-items:baseline; justify-content:space-between; gap:20px; padding:24px 0; color:var(--muted); font-size:12px; line-height:1.8; border-bottom:1px solid var(--box); }
 .luma-model-note a { flex-shrink:0; text-underline-offset:5px; }
 .luma-unavailable .luma-poster { opacity:.8; }
-.luma-unavailable .luma-controls,.luma-unavailable .luma-chapters,.luma-unavailable .luma-hotspots,.luma-unavailable .luma-zoom,.luma-unavailable .luma-gesture,.luma-unavailable .luma-canvas { display:none; }
+.luma-unavailable .luma-inspector-tools,.luma-unavailable .luma-hotspots,.luma-unavailable .luma-zoom,.luma-unavailable .luma-gesture,.luma-unavailable .luma-canvas { display:none; }
 @media (max-width:1050px) {
- .luma-hero-grid { grid-template-columns:minmax(250px,.85fr) minmax(0,1.3fr); gap:12px; }
- .luma-stage { height:570px; }
- .luma-gesture { max-width:160px; left:10px; }
- .luma-explode { margin-left:auto; }
+ .luma-scroll-story { grid-template-columns:minmax(260px,1fr) minmax(0,1.3fr); gap:24px; }
+ .luma-scroll-heading { grid-template-columns:1fr 1.3fr; gap:24px; }
+ .luma-scroll-heading > p { padding-left:0; }
+ .luma-identity h2 { font-size:90px; }
+ .luma-gesture { max-width:160px; font-size:10px; }
 }
 @media (max-width:760px) {
- .luma-hero { padding-top:24px; }
+ .luma-hero { padding-top:22px; }
  .luma-hero-top { font-size:10px; letter-spacing:.08em; }
- .luma-hero-grid { grid-template-columns:minmax(0,1fr); min-height:0; gap:0; }
- .luma-copy { padding:28px 0 0; }
- .luma-identity { justify-content:flex-start; gap:24px; }
+ .luma-scroll-heading { grid-template-columns:1fr; gap:18px; padding:26px 0; }
  .luma-identity h2 { font-size:74px; }
- .luma-identity img { width:54px; height:54px; margin-left:auto; }
- .luma-tagline { font-size:24px; margin-top:16px; }
- .luma-tagline br { display:none; }
- .luma-chapter { min-height:190px; margin-top:26px; }
- .luma-description { max-width:55ch; font-size:15px; line-height:1.8; }
- .luma-chapter h3 { font-size:17px; margin:8px 0 10px; }
- .luma-chapters { gap:4px 22px; margin:2px 0 0; }
- .luma-stage { height:420px; margin:0 -12px; width:calc(100% + 24px); }
- .luma-gesture { font-size:10px; bottom:22px; }
- .luma-toggles { gap:6px; }
- .luma-toggles button { padding:10px 12px; font-size:12px; }
- .luma-controls { gap:12px; padding:16px 0; }
- .luma-explode { margin-left:0; width:100%; }
- .luma-explode input { flex:1; }
+ .luma-identity img { width:54px; height:54px; }
+ .luma-scroll-heading > p { font-size:23px; }
+ .luma-scroll-heading > p br { display:none; }
+ .luma-scroll-heading > p span { font-size:10px; margin-top:12px; }
+ .luma-scroll-story { display:block; }
+ .luma-scroll-sticky { top:0; z-index:3; padding:6px 0 0; border-bottom:1px solid var(--box); }
+ .luma-tour-status { padding:2px 4px 4px; font-size:10px; gap:12px; }
+ .luma-stage { height:clamp(220px,34svh,320px); }
+ .luma-scroll-sticky:has(details[open]) .luma-stage { height:clamp(170px,23svh,220px); }
+ .luma-tour-nav { gap:5px; padding:0 4px; }
+ .luma-tour-nav button { height:24px; }
+ .luma-inspector-tools summary { padding:8px 4px; font-size:11px; }
+ .luma-scroll-chapter { min-height:65svh; padding:44px 0 58px; }
+ .luma-scroll-chapter h3 { font-size:30px; margin:14px 0 20px; }
+ .luma-description { font-size:15px; line-height:1.85; }
+ .luma-component-specs li { font-size:12px; }
+ .luma-eyebrow { font-size:10px; }
+ .luma-hotspots button { font-size:10px; padding:8px; }
+ .luma-gesture { max-width:145px; left:8px; bottom:18px; font-size:9px; }
+ .luma-zoom { right:4px; bottom:6px; }
+ .luma-zoom button { min-width:30px; min-height:34px; font-size:11px; }
+ .luma-toggles button { font-size:11px; min-height:36px; padding:8px 10px; }
  .luma-model-note { flex-direction:column; gap:8px; font-size:11px; }
 }
 @media (max-width:380px) {
- .luma-hero-top { flex-direction:column; gap:8px; }
+ .luma-hero-top { flex-direction:column; gap:6px; }
  .luma-identity h2 { font-size:64px; }
- .luma-chapters { gap:4px 16px; }
- .luma-stage { height:360px; }
- .luma-hotspots button { font-size:10px; padding:8px; }
- .luma-gesture { max-width:135px; }
+ .luma-scroll-heading > p { font-size:21px; }
+ .luma-gesture { max-width:105px; }
 }
-@media (prefers-reduced-motion:reduce) { .luma-canvas { scroll-behavior:auto; } }
