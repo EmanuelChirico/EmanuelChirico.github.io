@@ -9,8 +9,8 @@
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
 <link href="https://fonts.googleapis.com/css2?family=Anton&family=Italianno&family=Inter:wght@400;500;600&family=JetBrains+Mono:wght@700&display=swap" rel="stylesheet" />
 <link rel="icon" type="image/svg+xml" href="data:image/svg+xml,%3Csvg%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%20viewBox%3D%220%200%2064%2064%22%3E%3Crect%20width%3D%2264%22%20height%3D%2264%22%20fill%3D%22%230c0906%22%2F%3E%3Ctext%20x%3D%2232%22%20y%3D%2243%22%20text-anchor%3D%22middle%22%20font-family%3D%22Arial%2Csans-serif%22%20font-weight%3D%22700%22%20font-size%3D%2232%22%20fill%3D%22%23f2ead8%22%3EEC%3C%2Ftext%3E%3C%2Fsvg%3E" />
-<link rel="stylesheet" href="project-detail.css?v=20261122-luma-popup" />
-<link rel="stylesheet" href="luma-hero.css?v=20261122-luma-popup" />
+<link rel="stylesheet" href="project-detail.css?v=20261122-cv-filters" />
+<link rel="stylesheet" href="luma-hero.css?v=20261122-cv-filters" />
 <style>
   /* ========== VARIABILI ========== */
   :root {
@@ -660,7 +660,7 @@
     .arch-row, .arch-row::before, .bigmail, .bigmail::after, .craft-cell { transition:none; }
   }
 </style>
-<link rel="stylesheet" href="responsive.css" />
+<link rel="stylesheet" href="responsive.css?v=20261122-cv-filters" />
 </head>
 <body>
 
@@ -680,6 +680,7 @@
     <li><button id="navWork" class="active">Work</button></li>
     <li><button id="navArchive">Projects</button></li>
     <li><button id="navAbout">About</button></li>
+    <li><button id="navCV" data-open-cv>CV</button></li>
     <li><button id="navContact">Contact</button></li>
   </ul>
 </nav>
@@ -693,6 +694,7 @@
   <div class="hero-actions">
     <button id="exploreBtn">View selected work ↓</button>
     <button id="heroAboutBtn">About me</button>
+    <button data-open-cv>Curriculum vitae</button>
   </div>
   <div class="scrollcue" aria-hidden="true">
     <span>Scroll to explore</span>
@@ -766,7 +768,7 @@
       </div>
       <span class="tally" id="archTally"></span>
     </div>
-    <div class="filters" id="archFilters"></div>
+    <div class="filters" id="archFilters" role="group" aria-label="Filter projects by category"></div>
     <div class="arch-list" id="archList"></div>
     <div style="text-align:center">
       <button class="back" data-close>&larr; Back to work</button>
@@ -774,11 +776,32 @@
   </div>
 </div>
 
+<section class="panel cv-panel" id="panelCV" role="dialog" aria-label="Curriculum vitae" inert>
+  <div class="cv-inner">
+    <span class="cat">curriculum vitae</span>
+    <h2>Background &amp; experience</h2>
+    <p class="cv-intro">My education, technical background and selected projects, with a focus on embedded systems and hardware-software integration.</p>
+    <div class="cv-actions">
+      <a class="cv-primary" href="assets/cv/Emanuel_Chirico_CV.pdf" download="Emanuel_Chirico_CV.pdf">Download CV</a>
+      <a href="assets/cv/Emanuel_Chirico_CV.pdf" target="_blank" rel="noopener noreferrer">View PDF</a>
+    </div>
+    <p class="cv-format">English · PDF · One page</p>
+    <dl class="cv-summary">
+      <div><dt>Education</dt><dd>MSc Computer Engineering student<br>University of Salerno</dd></div>
+      <div><dt>Foundation</dt><dd>BSc in Computer Engineering<br>Graduated in 2025</dd></div>
+      <div><dt>Selected projects</dt><dd>PONDULO · LUMA · Aequitas</dd></div>
+    </dl>
+
+    <button class="back" data-close>Back to work</button>
+  </div>
+</section>
+
 <div class="panel" id="panelContact" role="dialog" aria-label="Contact" inert>
   <div class="inner">
     <span class="cat">contact</span>
     <h2>Get in touch</h2>
     <p>For internships, research opportunities and engineering collaborations, contact me by email or LinkedIn.</p>
+    <button class="cv-contact" data-open-cv>View my CV</button>
     <div class="links">
       <a href="mailto:emanuelchirico03@gmail.com">Email</a>
       <a href="https://github.com/EmanuelChirico" target="_blank" rel="noopener">GitHub</a>
@@ -849,8 +872,8 @@
   </div>
 </footer>
 
-<script src="luma-hero.js?v=20261122-luma-popup"></script>
-<script src="project-detail.js?v=20261122-luma-popup"></script>
+<script src="luma-hero.js?v=20261122-cv-filters"></script>
+<script src="project-detail.js?v=20261122-cv-filters"></script>
 <script>
 (() => {
   // Canvas effects are optional: privacy settings must not stop navigation or data loading.
@@ -1022,6 +1045,7 @@
   const outro = document.getElementById('outro');
 
   let projects = [];
+  let projectCategories = [];
   let featured = [];
   let cards = [];
   let N = 0;
@@ -1225,7 +1249,7 @@
       const flag = pr.featured ? '<span class="flag">Featured</span>' : '';
       const tag = 'a';
       const attrs = ` href="${projectHref(pr)}"`;
-      return `<${tag} class="arch-row" data-tags="${(pr.tags || []).join('|')}"${attrs}>
+      return `<${tag} class="arch-row" data-categories="${(pr.categories || []).join('|')}"${attrs}>
         <div>
           <h3>${pr.title}${flag}</h3>
           <p>${pr.desc || ''}</p>
@@ -1238,16 +1262,16 @@
       </${tag}>`;
     }).join('');
 
-    // i filtri nascono dai tag: nessuna lista da mantenere a mano
-    const allTags = [...new Set(projects.flatMap(pr => pr.tags || []))].sort();
-    archFilters.innerHTML =
-      `<button class="on" data-filter="*">All</button>` +
-      allTags.map(t => `<button data-filter="${t}">${t}</button>`).join('');
-
+    // Categories guide navigation; individual technologies remain on project cards.
+    archFilters.innerHTML = `<button class="on" data-filter="*" aria-pressed="true">All</button>` +
+      projectCategories.filter(category => projects.some(project => project.categories?.includes(category.id)))
+        .map(category => `<button data-filter="${category.id}" aria-pressed="false">${category.label.replace(/&/g, '&amp;')}</button>`).join('');
     archFilters.querySelectorAll('button').forEach(btn => {
       btn.addEventListener('click', () => {
-        archFilters.querySelectorAll('button').forEach(b => b.classList.remove('on'));
-        btn.classList.add('on');
+        archFilters.querySelectorAll('button').forEach(button => {
+          button.classList.toggle('on', button === btn);
+          button.setAttribute('aria-pressed', String(button === btn));
+        });
         applyFilter(btn.dataset.filter);
       });
     });
@@ -1258,8 +1282,8 @@
   function applyFilter(f) {
     let shown = 0;
     archList.querySelectorAll('.arch-row').forEach(row => {
-      const tags = row.dataset.tags.split('|');
-      const ok = f === '*' || tags.includes(f);
+      const categories = row.dataset.categories.split('|');
+      const ok = f === '*' || categories.includes(f);
       row.classList.toggle('hide', !ok);
       if (ok) shown++;
     });
@@ -1281,6 +1305,7 @@
       throw new Error('projects.json must contain a nonempty projects array');
     }
     projects = data.projects;
+    projectCategories = Array.isArray(data.categories) ? data.categories : [];
     featured = projects.filter(pr => pr.featured);
     if (!featured.length) featured = projects.slice(0, 6); // rete di sicurezza
 
@@ -1354,6 +1379,8 @@
   const panelAbout = document.getElementById('panelAbout');
   const panelArchive = document.getElementById('panelArchive');
   const panelContact = document.getElementById('panelContact');
+  const panelCV = document.getElementById('panelCV');
+  const navCV = document.getElementById('navCV');
   const navWork = document.getElementById('navWork');
   const navArchive = document.getElementById('navArchive');
   const navAbout = document.getElementById('navAbout');
@@ -1363,7 +1390,8 @@
   const panels = [
     [panelArchive, navArchive],
     [panelAbout, navAbout],
-    [panelContact, navContact]
+    [panelContact, navContact],
+    [panelCV, navCV]
   ];
 
   function show(panel) {
@@ -1401,6 +1429,7 @@
   navArchive.addEventListener('click', () => show(panelArchive));
   navAbout.addEventListener('click', () => show(panelAbout));
   navContact.addEventListener('click', () => show(panelContact));
+  document.querySelectorAll('[data-open-cv]').forEach(button => button.addEventListener('click', () => show(panelCV)));
   document.querySelectorAll('[data-close]').forEach(b => b.addEventListener('click', () => show(null)));
 
   // Esc chiude il pannello aperto

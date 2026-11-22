@@ -40,7 +40,7 @@
   .lockup .name { font-size: 23px; }
   .mainnav { position: static; min-width: 0; }
   .mainnav .rule { height: 1px; margin-bottom: 0; }
-  .mainnav ul { display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 4px; }
+  .mainnav ul { display: grid; grid-template-columns: repeat(5, minmax(0, 1fr)); gap: 4px; }
   .mainnav button { width: 100%; min-height: 44px; padding: 8px 0; font-size: 14px; letter-spacing: .08em; }
   .mainnav li:first-child button { text-align: left; }
   .mainnav li:last-child button { text-align: right; }
@@ -121,4 +121,29 @@
   .site-header { grid-template-columns: auto 1fr; align-items: center; gap: 24px; padding-block: max(6px, env(safe-area-inset-top)) 6px; }
   .mainnav .rule { display: none; }
   .hero { min-height: 100svh; padding-block: calc(var(--header-height) + 32px) 56px; }
+}
+
+/* CV access uses the existing panel navigation and measured header height. */
+.cv-inner { width:min(940px,100%); margin:auto; padding:18px 0; }
+.cv-panel .cat { text-align:left; }
+.cv-panel h2 { text-align:left; margin-bottom:24px; }
+.cv-panel .cv-intro { max-width:65ch; }
+.cv-summary { display:grid; grid-template-columns:1fr 1fr 1fr; gap:28px; margin:30px 0; border-block:1px solid var(--box); padding:26px 0; }
+.cv-summary dt { font-size:12px; color:var(--muted); text-transform:uppercase; letter-spacing:.1em; margin-bottom:12px; }
+.cv-summary dd { font-size:15px; line-height:1.8; }
+.cv-actions { display:flex; flex-wrap:wrap; align-items:center; gap:16px; margin:28px 0 14px; }
+.cv-actions a { padding:14px 22px; border:1px solid var(--box); font-size:14px; line-height:1.4; text-decoration:none; }
+.cv-actions .cv-primary { border-color:var(--red); background:var(--red); color:#fff; }
+.cv-actions a:hover { border-color:var(--cream); }
+.cv-panel .cv-format { font-size:12px; color:var(--muted); }
+.cv-contact { border:0; border-bottom:1px solid var(--red); background:none; color:var(--cream); padding:12px 0; font:14px var(--body); cursor:pointer; }
+.filters { margin-bottom:20px; }
+.filters button { min-height:42px; letter-spacing:.04em; }
+@media (max-width:900px) {
+ .mainnav button { font-size:13px; letter-spacing:.04em; }
+ .cv-inner { padding:0; }
+ .cv-summary { grid-template-columns:1fr; gap:22px; margin:24px 0; }
+ .cv-panel h2 { font-size:clamp(32px,8vw,54px); }
+ .filters { gap:8px; }
+ .filters button { padding:10px 12px; font-size:11px; }
 }

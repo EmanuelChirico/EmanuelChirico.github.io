@@ -232,7 +232,10 @@
             "caption": "The physical prototype documented in the project repository."
           }
         ]
-      }
+      },
+      "categories": [
+        "embedded-iot"
+      ]
     },
     {
       "title": "LUMA",
@@ -287,7 +290,10 @@
         "src": "assets/projects/luma/logo.webp",
         "width": 360,
         "height": 360
-      }
+      },
+      "categories": [
+        "embedded-iot"
+      ]
     },
     {
       "title": "Aequitas",
@@ -328,7 +334,10 @@
         "src": "assets/projects/aequitas/logo.webp",
         "width": 640,
         "height": 213
-      }
+      },
+      "categories": [
+        "cryptography"
+      ]
     },
     {
       "title": "VibeFlow",
@@ -369,7 +378,10 @@
         "src": "assets/projects/vibeflow/logo.webp",
         "width": 174,
         "height": 174
-      }
+      },
+      "categories": [
+        "software-systems"
+      ]
     },
     {
       "title": "SafeStep-XR",
@@ -410,7 +422,10 @@
         "src": "assets/projects/safestep-xr/logo.webp",
         "width": 465,
         "height": 360
-      }
+      },
+      "categories": [
+        "software-systems"
+      ]
     },
     {
       "title": "Waste Sorting AI",
@@ -446,7 +461,10 @@
         ],
         "outcome": "The repository provides training and inference notebooks, final ResNet50 weights and an alternative ResNet18 checkpoint. Training was written for Google Colab and requires adapting the dataset and export paths before rerunning.",
         "credits": "Team: Luigi Autorino, Emanuel Chirico and Alessio Ferrara. Summary based on the project README."
-      }
+      },
+      "categories": [
+        "ai-ml"
+      ]
     },
     {
       "title": "Home Wi-Fi",
@@ -460,7 +478,10 @@
       ],
       "url": "https://github.com/EmanuelChirico/Domestic-WiFi-Optimization",
       "featured": false,
-      "id": "home-wifi"
+      "id": "home-wifi",
+      "categories": [
+        "software-systems"
+      ]
     },
     {
       "title": "ShoeGO",
@@ -475,7 +496,10 @@
       ],
       "url": "https://github.com/EmanuelChirico/Tecnologie-Web-Project",
       "featured": false,
-      "id": "e-commerce"
+      "id": "e-commerce",
+      "categories": [
+        "software-systems"
+      ]
     },
     {
       "title": "Contact Manager",
@@ -490,7 +514,28 @@
       ],
       "url": "https://github.com/EmanuelChirico/Progetto_ingegneria_del_software_gruppo_4",
       "featured": false,
-      "id": "contact-manager"
+      "id": "contact-manager",
+      "categories": [
+        "software-systems"
+      ]
+    }
+  ],
+  "categories": [
+    {
+      "id": "embedded-iot",
+      "label": "Embedded & IoT"
+    },
+    {
+      "id": "ai-ml",
+      "label": "AI & ML"
+    },
+    {
+      "id": "cryptography",
+      "label": "Cryptography"
+    },
+    {
+      "id": "software-systems",
+      "label": "Software & Systems"
     }
   ]
 }
